@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7B2FBE"/>
+      <stop offset="100%" style="stop-color:#E056D7"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0AC9DB"/>
+      <stop offset="100%" style="stop-color:#6EE8F3"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="#040517"/>
+  <circle cx="256" cy="220" r="120" fill="url(#bg)" opacity="0.3"/>
+  <circle cx="256" cy="220" r="80" fill="url(#bg)" opacity="0.5"/>
+  <circle cx="256" cy="220" r="40" fill="url(#accent)"/>
+  <circle cx="256" cy="220" r="12" fill="#040517"/>
+  <!-- Disco ball lines -->
+  <line x1="176" y1="220" x2="336" y2="220" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <line x1="256" y1="140" x2="256" y2="300" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <ellipse cx="256" cy="220" rx="80" ry="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <ellipse cx="256" cy="220" rx="40" ry="80" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <!-- Text -->
+  <text x="256" y="370" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="42" fill="#ffffff" letter-spacing="2">DISCO HOUSE</text>
+  <text x="256" y="420" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="48" fill="#0AC9DB" letter-spacing="3">NATION</text>
+  <!-- Sparkles -->
+  <circle cx="160" cy="150" r="3" fill="#0AC9DB" opacity="0.8"/>
+  <circle cx="340" cy="170" r="2" fill="#E056D7" opacity="0.8"/>
+  <circle cx="180" cy="290" r="2.5" fill="#6EE8F3" opacity="0.6"/>
+  <circle cx="330" cy="280" r="2" fill="#E056D7" opacity="0.7"/>
+</svg>
