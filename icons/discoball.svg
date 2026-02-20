@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#7B2FBE;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#040517;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="ball" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" style="stop-color:#E8E8F0"/>
+      <stop offset="30%" style="stop-color:#C0C0D0"/>
+      <stop offset="70%" style="stop-color:#8888AA"/>
+      <stop offset="100%" style="stop-color:#555577"/>
+    </radialGradient>
+    <radialGradient id="shine" cx="35%" cy="30%" r="25%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </radialGradient>
+    <clipPath id="ballClip">
+      <circle cx="100" cy="100" r="70"/>
+    </clipPath>
+  </defs>
+  
+  <!-- Outer glow -->
+  <circle cx="100" cy="100" r="98" fill="url(#glow)"/>
+  
+  <!-- Main ball -->
+  <circle cx="100" cy="100" r="70" fill="url(#ball)"/>
+  
+  <!-- Mirror tile grid -->
+  <g clip-path="url(#ballClip)" opacity="0.6">
+    <!-- Horizontal bands -->
+    <ellipse cx="100" cy="100" rx="70" ry="15" fill="none" stroke="#0AC9DB" stroke-width="0.5" opacity="0.4"/>
+    <ellipse cx="100" cy="100" rx="70" ry="35" fill="none" stroke="#0AC9DB" stroke-width="0.5" opacity="0.4"/>
+    <ellipse cx="100" cy="100" rx="70" ry="55" fill="none" stroke="#0AC9DB" stroke-width="0.5" opacity="0.4"/>
+    <line x1="30" y1="100" x2="170" y2="100" stroke="#0AC9DB" stroke-width="0.5" opacity="0.3"/>
+    
+    <!-- Vertical lines curving around the ball -->
+    <ellipse cx="100" cy="100" rx="15" ry="70" fill="none" stroke="#E056D7" stroke-width="0.5" opacity="0.3"/>
+    <ellipse cx="100" cy="100" rx="35" ry="70" fill="none" stroke="#E056D7" stroke-width="0.5" opacity="0.3"/>
+    <ellipse cx="100" cy="100" rx="55" ry="70" fill="none" stroke="#E056D7" stroke-width="0.5" opacity="0.3"/>
+    <line x1="100" y1="30" x2="100" y2="170" stroke="#E056D7" stroke-width="0.5" opacity="0.3"/>
+    
+    <!-- Tile highlights - scattered reflections -->
+    <rect x="58" y="50" width="12" height="8" rx="1" fill="#0AC9DB" opacity="0.25" transform="rotate(-10 64 54)"/>
+    <rect x="80" y="42" width="10" height="8" rx="1" fill="#E056D7" opacity="0.2" transform="rotate(-5 85 46)"/>
+    <rect x="105" y="45" width="11" height="7" rx="1" fill="#0AC9DB" opacity="0.3" transform="rotate(5 110 48)"/>
+    <rect x="128" y="55" width="10" height="8" rx="1" fill="#ffffff" opacity="0.15" transform="rotate(10 133 59)"/>
+    
+    <rect x="48" y="68" width="13" height="9" rx="1" fill="#E056D7" opacity="0.2" transform="rotate(-15 54 72)"/>
+    <rect x="72" y="62" width="11" height="8" rx="1" fill="#ffffff" opacity="0.2" transform="rotate(-3 77 66)"/>
+    <rect x="95" y="60" width="12" height="8" rx="1" fill="#0AC9DB" opacity="0.35" transform="rotate(0 101 64)"/>
+    <rect x="118" y="65" width="11" height="8" rx="1" fill="#E056D7" opacity="0.25" transform="rotate(8 123 69)"/>
+    <rect x="138" y="72" width="10" height="8" rx="1" fill="#0AC9DB" opacity="0.15" transform="rotate(15 143 76)"/>
+    
+    <rect x="42" y="88" width="14" height="9" rx="1" fill="#0AC9DB" opacity="0.15" transform="rotate(-18 49 92)"/>
+    <rect x="65" y="82" width="12" height="9" rx="1" fill="#ffffff" opacity="0.2"/>
+    <rect x="88" y="80" width="12" height="9" rx="1" fill="#E056D7" opacity="0.3"/>
+    <rect x="110" y="82" width="12" height="9" rx="1" fill="#0AC9DB" opacity="0.25"/>
+    <rect x="132" y="88" width="11" height="8" rx="1" fill="#ffffff" opacity="0.15" transform="rotate(12 137 92)"/>
+    
+    <rect x="42" y="108" width="14" height="9" rx="1" fill="#E056D7" opacity="0.15" transform="rotate(-16 49 112)"/>
+    <rect x="65" y="102" width="12" height="9" rx="1" fill="#0AC9DB" opacity="0.25"/>
+    <rect x="88" y="100" width="12" height="9" rx="1" fill="#ffffff" opacity="0.2"/>
+    <rect x="110" y="102" width="12" height="9" rx="1" fill="#E056D7" opacity="0.3"/>
+    <rect x="132" y="108" width="11" height="8" rx="1" fill="#0AC9DB" opacity="0.2" transform="rotate(14 137 112)"/>
+    
+    <rect x="48" y="125" width="13" height="8" rx="1" fill="#ffffff" opacity="0.15" transform="rotate(-12 54 129)"/>
+    <rect x="72" y="120" width="11" height="8" rx="1" fill="#E056D7" opacity="0.2"/>
+    <rect x="95" y="118" width="12" height="8" rx="1" fill="#0AC9DB" opacity="0.25"/>
+    <rect x="118" y="122" width="11" height="8" rx="1" fill="#ffffff" opacity="0.2" transform="rotate(8 123 126)"/>
+    
+    <rect x="60" y="138" width="11" height="7" rx="1" fill="#0AC9DB" opacity="0.15" transform="rotate(-8 65 141)"/>
+    <rect x="82" y="135" width="10" height="7" rx="1" fill="#E056D7" opacity="0.2"/>
+    <rect x="105" y="136" width="10" height="7" rx="1" fill="#ffffff" opacity="0.15" transform="rotate(5 110 139)"/>
+    <rect x="125" y="140" width="10" height="6" rx="1" fill="#0AC9DB" opacity="0.15" transform="rotate(10 130 143)"/>
+  </g>
+  
+  <!-- Shine/highlight -->
+  <circle cx="100" cy="100" r="70" fill="url(#shine)"/>
+  
+  <!-- Edge ring -->
+  <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  
+  <!-- Sparkle rays -->
+  <g opacity="0.6">
+    <line x1="100" y1="18" x2="100" y2="8" stroke="#0AC9DB" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="155" y1="35" x2="162" y2="28" stroke="#E056D7" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="175" y1="80" x2="185" y2="78" stroke="#0AC9DB" stroke-width="1" stroke-linecap="round"/>
+    <line x1="170" y1="130" x2="178" y2="135" stroke="#E056D7" stroke-width="1" stroke-linecap="round"/>
+    <line x1="38" y1="42" x2="30" y2="36" stroke="#0AC9DB" stroke-width="1" stroke-linecap="round"/>
+    <line x1="22" y1="90" x2="12" y2="88" stroke="#E056D7" stroke-width="1" stroke-linecap="round"/>
+    
+    <!-- Sparkle dots -->
+    <circle cx="165" cy="50" r="2" fill="#0AC9DB" opacity="0.8"/>
+    <circle cx="30" cy="60" r="1.5" fill="#E056D7" opacity="0.7"/>
+    <circle cx="175" cy="110" r="1.5" fill="#0AC9DB" opacity="0.6"/>
+    <circle cx="25" cy="130" r="2" fill="#E056D7" opacity="0.5"/>
+    <circle cx="80" cy="12" r="1.5" fill="#0AC9DB" opacity="0.7"/>
+    <circle cx="130" cy="185" r="1.5" fill="#E056D7" opacity="0.6"/>
+  </g>
+</svg>

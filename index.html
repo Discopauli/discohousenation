@@ -183,7 +183,7 @@ a { color: var(--cyan); text-decoration: none; }
 
 <!-- ═══ SPLASH ═══ -->
 <div id="splash">
-  <img src="icons/logo.png" style="width:180px;animation:spin 3s linear infinite;filter:drop-shadow(0 0 40px rgba(10,201,219,0.4)) drop-shadow(0 0 20px rgba(224,86,215,0.3));margin-bottom:20px" alt="DHN">
+  <img src="icons/logo-round.png" style="width:120px;height:120px;border-radius:50%;animation:spin 3s linear infinite;filter:drop-shadow(0 0 40px rgba(10,201,219,0.4)) drop-shadow(0 0 20px rgba(224,86,215,0.3));margin-bottom:20px" alt="DHN">
   <h1>DISCO HOUSE <span>NATION</span></h1>
   <p>Loading the groove...</p>
 </div>
@@ -248,15 +248,45 @@ const allDJs = [
   { name:"Vincent Galgo", aka:"DJ Vincent Galgo", show:"Bacardisco", slot:"Sat 6pm", bio:"Strongly influenced by Disco. Founder of Mexican label Nine Tails Records, co-owner at Romita Vinyl Store. From Disco to Soul, Indie Dance to Deep House.", genre:"Disco / Soul / Indie Dance", resident:true },
 ];
 
-const schedule = {
+// ═══ FALLBACK SCHEDULE (used if website fetch fails) ═══
+const fallbackSchedule = {
   Monday:[{time:"6pm",dj:"Miss G",show:"Let's Go Dancing"},{time:"8pm",dj:"DJ Fernie",show:"Disco Balls"}],
   Tuesday:[{time:"6pm",dj:"ADRA",show:"Guest Mix Replay"},{time:"7pm",dj:"DJ Hicky",show:"Divine Disco"},{time:"8:30pm",dj:"Jamie Ross",show:"Kitchen Beats"}],
   Wednesday:[{time:"1pm",dj:"Eian Prince",show:"UNVRS"},{time:"6pm",dj:"DJ LoveDisco",show:"Drivetime Disco"},{time:"8pm",dj:"DJ Pistol Pete",show:"Funky Disco House Midweek Beats"}],
   Thursday:[{time:"6pm",dj:"Tony Blanca",show:"The Dance Zone"},{time:"8pm",dj:"Slazz",show:"The Groove Machine Hot Mix Show"},{time:"10pm",dj:"DJ Jay Rock",show:"The Funky Groove Mix"}],
   Friday:[{time:"4pm",dj:"Disco Evangelists",show:"Behind The Groove"},{time:"6pm",dj:"Chris Jackson",show:"Groove Sanctuary"},{time:"9pm",dj:"Sam Shelley",show:"Exclusive Guest Mix"},{time:"10pm",dj:"DJ Hicky",show:"Divine Disco"}],
-  Saturday:[{time:"6pm",dj:"Vincent Galgo",show:"Bacardisco"},{time:"10pm",dj:"Joshua J",show:"Disco's Calling"}],
+  Saturday:[{time:"6pm",dj:"Vincent Galgo",show:"Bacardisco"}],
   Sunday:[{time:"12pm",dj:"DJ LoveDisco",show:"Sunday Disco Roast"},{time:"4pm",dj:"DiscoPauli",show:"Disco Back In The House",highlight:true},{time:"6pm",dj:"Chris Jackson",show:"Laidback Lounge"},{time:"8pm",dj:"DJ Bobby K",show:"Twirlessence!"}],
 };
+
+// Live schedule - starts as fallback, gets replaced by live data
+let schedule = {...fallbackSchedule};
+let scheduleSource = 'fallback';
+
+// Fetch live schedule from website via Netlify function
+async function fetchLiveSchedule() {
+  try {
+    const res = await fetch('/.netlify/functions/schedule');
+    if (!res.ok) throw new Error('Fetch failed');
+    const data = await res.json();
+    if (data.schedule && Object.keys(data.schedule).length >= 3) {
+      schedule = data.schedule;
+      scheduleSource = 'live';
+      console.log('Schedule loaded live from website:', data.days, 'days, updated:', data.updated);
+      // Re-render schedule if we're on that screen
+      if (document.getElementById('scheduleScreen')) {
+        renderSchedule();
+      }
+    }
+  } catch(e) {
+    console.log('Using fallback schedule:', e.message);
+    scheduleSource = 'fallback';
+  }
+}
+// Fetch on load
+fetchLiveSchedule();
+// Refresh every 30 minutes
+setInterval(fetchLiveSchedule, 30 * 60 * 1000);
 
 const mixes = [
   {dj:"DiscoPauli",title:"Sunday Sessions Vol.12",duration:"1hr 22m",plays:"2.4k",date:"Feb 16"},
@@ -495,18 +525,18 @@ function renderHome() {
 function renderSchedule() {
   return `
     <h2 style="font-size:20px;font-weight:900;margin-bottom:2px">DJ <span style="color:var(--cyan)">SCHEDULE</span></h2>
-    <p style="font-size:11px;color:var(--textMuted);margin-bottom:14px">Live DJs every day — all times UK</p>
+    <p style="font-size:11px;color:var(--textMuted);margin-bottom:14px">Live DJs every day — all times UK <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:${scheduleSource==='live'?'rgba(10,201,219,0.15)':'rgba(224,86,215,0.15)'};color:${scheduleSource==='live'?'var(--cyan)':'var(--magenta)'};font-weight:700;margin-left:4px">${scheduleSource==='live'?'LIVE':'CACHED'}</span></p>
     <div style="display:flex;gap:4px;margin-bottom:16px">
       ${dayNames.map((d,i) => `<button class="chip ${selectedDay===d?'active':''}" style="flex:1;padding:8px 0;text-align:center" onclick="selectedDay='${d}';renderScreen('schedule')">${shortDays[i]}</button>`).join('')}
     </div>
     <div style="font-size:15px;font-weight:800;color:var(--magenta);margin-bottom:12px;letter-spacing:1px">${selectedDay.toUpperCase()}</div>
     <div style="display:flex;flex-direction:column;gap:10px">
-      ${schedule[selectedDay].map(s => `
+      ${(schedule[selectedDay]||[]).map(s => `
         <div class="card ${s.highlight?'card-glow':''}" style="padding:14px;display:flex;align-items:center;gap:12px">
           <div style="width:48px;height:48px;border-radius:12px;${s.highlight?'background:linear-gradient(135deg,var(--purple),var(--magenta))':'background:rgba(10,201,219,0.08);border:1px solid var(--border)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <span style="font-size:11px;font-weight:900;color:${s.highlight?'#fff':'var(--cyan)'}">${s.time}</span>
           </div>
-          <div style="flex:1"><div style="font-size:14px;font-weight:700">${s.dj}</div><div style="font-size:11px;color:var(--textMuted)">${s.show}</div></div>
+          <div style="flex:1"><div style="font-size:14px;font-weight:700">${s.dj}</div>${s.show?`<div style="font-size:11px;color:var(--textMuted)">${s.show}</div>`:''}</div>
           ${s.highlight?'<div class="you-badge">YOU</div>':''}
         </div>
       `).join('')}
