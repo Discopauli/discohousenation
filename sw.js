@@ -1,10 +1,12 @@
-const CACHE_NAME = 'dhn-v1';
+const CACHE_NAME = 'dhn-v2';
 const ASSETS = [
   '/app/',
   '/app/index.html',
   '/app/manifest.json',
+  '/app/icons/icon-180.png',
   '/app/icons/icon-192.png',
   '/app/icons/icon-512.png',
+  '/app/icons/logo.png',
   'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap'
 ];
 
