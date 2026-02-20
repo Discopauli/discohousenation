@@ -1,49 +1,60 @@
-const CACHE_NAME = 'dhn-v6';
-const ASSETS = [
-  '/app/',
-  '/app/index.html',
-  '/app/manifest.json',
-  '/app/icons/icon-180.png',
-  '/app/icons/icon-192.png',
-  '/app/icons/icon-512.png',
-  '/app/icons/logo.png',
-  '/app/icons/logo-round.png',
-  '/app/icons/discoball.svg',
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap'
+// DHN Service Worker v9 — Always checks for fresh content
+const CACHE_NAME = 'dhn-v9';
+const APP_SHELL = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icons/icon-180.png',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/logo.png',
+  '/icons/logo-round.png',
+  '/icons/discoball.svg',
 ];
 
-// Install — cache core assets
+// Install — cache app shell
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Activate immediately, don't wait
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL))
   );
-  self.skipWaiting();
 });
 
-// Activate — clean old caches
+// Activate — delete ALL old caches immediately
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+    ).then(() => self.clients.claim()) // Take control of all pages immediately
   );
-  self.clients.claim();
 });
 
-// Fetch — network first, fall back to cache (except for the audio stream)
+// Fetch — network first, fall back to cache
 self.addEventListener('fetch', event => {
-  // Don't cache the audio stream or the live schedule function
-  if (event.request.url.includes('citrus3.com') || event.request.url.includes('/8172/') || event.request.url.includes('radio.mp3') || event.request.url.includes('.netlify/functions/')) {
+  const url = event.request.url;
+
+  // Never touch audio streams or netlify functions
+  if (url.includes('citrus3.com') || url.includes('/8172/') || url.includes('radio.mp3') || url.includes('.netlify/functions/')) {
     return;
   }
 
+  // Don't cache external resources (soundcloud, facebook, etc)
+  if (!url.includes(self.location.origin)) {
+    return;
+  }
+
+  // Network first — always try to get fresh content
   event.respondWith(
     fetch(event.request)
       .then(response => {
+        // Got fresh content — update the cache
         const clone = response.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => {
+        // Network failed — serve from cache (offline support)
+        return caches.match(event.request);
+      })
   );
 });

@@ -228,24 +228,24 @@ let currentStreamIndex = 0;
 
 // ── DATA ──
 const allDJs = [
-  { name:"Mark Atkins", aka:"Disco Evangelists", show:"Behind The Groove", slot:"Fri 4–6pm", bio:"Better known on dancefloors as Disco Evangelists — a vibrant fusion of funky, soulful vocal house. Cutting his teeth in the late 90s for Miss Moneypenny's and Fuel.", genre:"Funky / Soulful Vocal House", resident:true },
-  { name:"Joshua J", aka:"", show:"Disco's Calling", slot:"Sat 10pm–12am", bio:"Introduced to the Rave Scene in the late 90s in Halifax, Canada. First turntables in 1999, residencies with Courageous Productions & Urban Fuel Records. Now based in Toronto.", genre:"Disco / House", resident:true },
-  { name:"Paul Gordon", aka:"DiscoPauli", show:"Disco Back In The House", slot:"Sun 4–6pm", bio:"They say you can't teach an old dog new tricks, but DiscoPauli has been proving that wrong. After 22 years managing tech at @HomePC, he's brought his musical-meets-technical brain to the DHN family.", genre:"Disco House", resident:true, isYou:true },
-  { name:"Slazz", aka:"", show:"The Groove Machine Hot Mix Show", slot:"Thu 8–10pm", bio:"Adventures in music began in an experimental indie-rock band. Captivated by the early acid house club scene in London. Renowned for freestyle mixes of underground edits and fresh grooves.", genre:"Underground / Disco House", resident:true },
-  { name:"Bobby K", aka:"Twirlessence", show:"Twirlessence!", slot:"Sun 8pm", bio:"DJ and music curator from the U.S. Midwest, shaped by Motown soul, Chicago house and European Hi-NRG. DJing since the early 1980s.", genre:"Funk / Disco / Hi-NRG", resident:true },
-  { name:"Omar", aka:"Discolieber", show:"Guest DJ", slot:"Guest", bio:"Influenced by Soul, Jazz, R&B, Disco, House and Deep House. Founder of the extinct Tief Records label. Part of Mexican label Disko Knights.", genre:"Disco / Deep House / Soul", resident:false },
-  { name:"Steven Thomson", aka:"DJ Fabulous", show:"Guest DJ", slot:"Guest", bio:"Known for crafting feel-good sets blending soulful house, disco, funky tunes and good grooves. Rooted in rhythm, warmth and positive energy.", genre:"Soulful House / Disco / Funk", resident:false },
-  { name:"Peter Marlow", aka:"DJ Pistol Pete", show:"Funky Disco House Midweek Beats", slot:"Wed 8pm", bio:"Rising name in the UK Disco House scene, representing Death By Disco collective out of Loughborough. High energy, feel-good vibes.", genre:"Funky Disco House", resident:true },
-  { name:"Dave Newsome", aka:"", show:"Guest DJ", slot:"Guest", bio:"Leeds-based DJ known for eclectic mixes of disco, house and soulful music. Active for over a decade across SoundCloud, Mixcloud and YouTube.", genre:"Disco / House / Soulful", resident:false },
-  { name:"Chris Jackson", aka:"Night At The Island", show:"Groove Sanctuary / Laidback Lounge", slot:"Fri 6pm & Sun 6pm", bio:"Co-founder of Disco House Nation. Started DJing in 2021, created Night At The Island. Built DHN to share his love for disco and funk.", genre:"Disco / Funk", resident:true },
-  { name:"Paul Mulholland", aka:"St Jude", show:"Guest DJ", slot:"Guest", bio:"Growing up in Glasgow, Scotland — a city that knows how to party — immersed in the sounds of artists who shaped his musical direction.", genre:"Disco / House", resident:false },
-  { name:"Tony Blanca", aka:"DJ Tony Blanca", show:"The Dance Zone", slot:"Thu 6pm", bio:"House and disco DJ with pop, latin and jazz influences. From the most up-to-date styles to great tracks from the 1970s disco era.", genre:"House / Disco / Latin", resident:true },
-  { name:"DJ Fernie", aka:"", show:"Disco Balls", slot:"Mon 8pm", bio:"Music lover first and foremost. Listening to dance music since Pete Tong's Radio One days. Jumped into the rave scene, mastered mixing at sixteen.", genre:"Dance / House", resident:true },
-  { name:"Martyn Hixon", aka:"DJ Hicky", show:"Divine Disco", slot:"Tue 7pm & Fri 10pm", bio:"Co-founder of DHN. Career spans back to 1989, starting at Sloanes Nightclub in Swansea on Technics 1200mk2 turntables which he still owns.", genre:"Disco / House", resident:true },
-  { name:"Jamie Ross", aka:"DJ Jamie Ross", show:"Kitchen Beats", slot:"Tue 8:30pm", bio:"Amateur house music DJ whose journey began in the early 2000s. Deep love for funky uplifting grooves and classic house vibes.", genre:"Funky House", resident:true },
-  { name:"Phil LoveDisco", aka:"DJ LoveDisco", show:"Drivetime Disco / Sunday Disco Roast", slot:"Wed 6pm & Sun 12pm", bio:"From the moment 16-year-old Phil first saw Saturday Night Fever in Brighton, his fate was sealed. Armed with Chic's Le Freak, the legend began.", genre:"Disco / Funk / Soul", resident:true },
-  { name:"Miss G", aka:"DJ Miss G", show:"Let's Go Dancing", slot:"Mon 6pm", bio:"Emerging force in Disco, House and Trance music. Blending vibrant sounds with community and creativity. Inspired by Diana Ross and The Temptations.", genre:"Disco / House / Trance", resident:true },
-  { name:"Vincent Galgo", aka:"DJ Vincent Galgo", show:"Bacardisco", slot:"Sat 6pm", bio:"Strongly influenced by Disco. Founder of Mexican label Nine Tails Records, co-owner at Romita Vinyl Store. From Disco to Soul, Indie Dance to Deep House.", genre:"Disco / Soul / Indie Dance", resident:true },
+  { name:"Chris Jackson", aka:"Night At The Island", show:"Groove Sanctuary / Laidback Lounge", slot:"Fri 6pm & Sun 6pm", bio:"Co-founder of Disco House Nation. Chris started DJing in 2021 and created Night At The Island shortly after. After playing on several stations over the last 5 years, he decided he wanted to share his love for disco and funk and bring his passion to a wider audience with a dedicated station for like-minded music lovers.", genre:"Disco / Funk", resident:true },
+  { name:"Martyn Hixon", aka:"DJ Hicky", show:"Divine Disco", slot:"Tue 7pm & Fri 10pm", bio:"Co-founder of DHN. Martyn's career spans back to 1989, starting at Sloanes Nightclub in Swansea on Technics 1200mk2 turntables — which he still owns and uses today. He quickly established himself across the UK and Europe, and remains one of the driving forces behind Disco House Nation.", genre:"Disco / House", resident:true },
+  { name:"Paul Gordon", aka:"DiscoPauli", show:"Disco Back In The House", slot:"Sun 4–6pm", bio:"They say you can't teach an old dog new tricks, but DiscoPauli has been proving that wrong since before some of you were born. After 22 years managing tech at @HomePC and hoarding more gadgets than a Currys warehouse, Paul has officially brought his musical-meets-technical brain to the Disco House Nation family. Part DJ, part tech wizard — all groove.", genre:"Disco House", resident:true, isYou:true },
+  { name:"Mark Atkins", aka:"Disco Evangelists", show:"Behind The Groove", slot:"Fri 4–6pm", bio:"Better known on dancefloors as Disco Evangelists, Mark brings a vibrant fusion of funky, soulful vocal house to every set he plays. Rooted in the golden era of feel-good club culture, his sound blends classic beats with modern grooves. Cutting his teeth in the late 90s and early 2000s, Mark graced the decks for iconic brands such as Miss Moneypenny's and Fuel, earning a reputation for uplifting selections and an instinctive ability to read the room.", genre:"Funky / Soulful Vocal House", resident:true },
+  { name:"Miss G", aka:"DJ Miss G", show:"Let's Go Dancing", slot:"Mon 6pm", bio:"Miss G is an emerging force in the realms of Disco, House and Trance music, blending vibrant sounds with a passion for community and creativity. Drawing inspiration from her early musical influences, including her father and iconic artists like Diana Ross and The Temptations, Miss G has carved out a unique niche that resonates with listeners around the globe.", genre:"Disco / House / Trance", resident:true },
+  { name:"DJ Fernie", aka:"", show:"Disco Balls", slot:"Mon 8pm", bio:"Music lover first and foremost! Fernie has been listening to dance music since Pete Tong was doing his rap show on Radio One. From there he jumped into the rave scene and that's where his DJing started — a friend had a set of decks for Christmas and at the tender age of sixteen he learned to master mixing. The rest, as they say, is history.", genre:"Dance / House", resident:true },
+  { name:"Phil LoveDisco", aka:"DJ LoveDisco", show:"Drivetime Disco / Sunday Disco Roast", slot:"Wed 6pm & Sun 12pm", bio:"From the moment a wide-eyed 16-year-old Phil first gazed upon the cinematic magic of Saturday Night Fever in a tiny Brighton cinema, his fate was sealed: he was destined to become a purveyor of pure, unadulterated groove. That night, the seeds were sown, and soon after, armed with his first utterly indispensable vinyl purchase — Chic's monumental Le Freak — the legend of Phil LoveDisco began.", genre:"Disco / Funk / Soul", resident:true },
+  { name:"Peter Marlow", aka:"DJ Pistol Pete", show:"Funky Disco House Midweek Beats", slot:"Wed 8pm", bio:"DJ Pistol Pete is a rising name in the UK Disco House scene, representing the vibrant Death By Disco collective out of Loughborough along with Marcus Rich. Specialising in funky disco house and pure house music, he is known for bringing high energy and feel-good vibes to the dancefloor and most of all putting smiles on people's faces.", genre:"Funky Disco House", resident:true },
+  { name:"Tony Blanca", aka:"DJ Tony Blanca", show:"The Dance Zone", slot:"Thu 6pm", bio:"Tony Blanca is a house and disco DJ with pop, latin and jazz influences. He plays everything from the most up-to-date styles to the great tracks from the 1970s disco era. His eclectic taste and smooth mixing style make every set a journey through decades of dancefloor gold.", genre:"House / Disco / Latin", resident:true },
+  { name:"Slazz", aka:"", show:"The Groove Machine Hot Mix Show", slot:"Thu 8–10pm", bio:"Slazz's adventures in music began as a teenager in an experimental indie-rock band. Captivated by the early acid house club scene in London, he moved on to release a couple of underground house records. With a deep knowledge of music to draw upon, he is renowned for a freestyle mix of underground edits, forgotten treasures, familiar classics and a heavy dose of the current freshest grooves.", genre:"Underground / Disco House", resident:true },
+  { name:"Jamie Ross", aka:"DJ Jamie Ross", show:"Kitchen Beats", slot:"Tue 8:30pm", bio:"Jamie Ross is an amateur house music DJ whose journey began in the early 2000s, driven by a deep love for funky uplifting grooves and the timeless energy of all things house music. What started as a simple fascination quickly grew into a defining passion, with Jamie spending countless hours behind the decks refining his style and developing a warm, feel-good sound rooted in classic house vibes.", genre:"Funky House", resident:true },
+  { name:"Vincent Galgo", aka:"DJ Vincent Galgo", show:"Bacardisco", slot:"Sat 6pm", bio:"Strongly influenced by Disco music, Vincent is the founder of the Mexican label Nine Tails Records and co-owner at Romita Vinyl Store. He goes from Disco to Soul, from Indie Dance to Deep House on his tracks and DJ sets, with elements that make us remember those orchestras that gave life to the 70s music — all with his own personal touch for modern dancefloors.", genre:"Disco / Soul / Indie Dance", resident:true },
+  { name:"Bobby K", aka:"Twirlessence", show:"Twirlessence!", slot:"Sun 8pm", bio:"Twirlessence aka Bobby K is a DJ and music curator from the U.S. Midwest, shaped by early influences of Motown soul, Chicago house and European Hi-NRG. DJing since the early 1980s, his sound moves fluidly from funk and disco through house and Hi-NRG, always guided by melody, groove and emotional connection. Today, his sets blend classic foundations with modern Nu-Disco and contemporary house, bridging decades of dancefloor culture.", genre:"Funk / Disco / Hi-NRG", resident:true },
+  { name:"Joshua J", aka:"", show:"Guest DJ", slot:"Guest", bio:"Joshua J was first introduced to the Rave Scene in the late 90s by some coworkers in Halifax, Canada. He bought his first set of turntables in 1999 and quickly made a name for himself developing residencies with Courageous Productions and Urban Fuel Records, where he was able to play alongside some of the world's best DJs. Now based in Toronto, Canada, Joshua J is coming off a great year playing shows in Niagara, Toronto, Nova Scotia and Croatia.", genre:"Disco / House", resident:false },
+  { name:"Omar", aka:"Discolieber", show:"Guest DJ", slot:"Guest", bio:"Influenced by an eclecticism that goes from Soul and Jazz to R&B through Disco, House and Deep House, Omar has been recognised for his perfect musical selections that have led him to perform in the best clubs in the country. Founder of the extinct Tief Records label and part of the Mexican label Disko Knights, Omar is recognised as one of the best musical selectors in Mexico.", genre:"Disco / Deep House / Soul", resident:false },
+  { name:"Steven Thomson", aka:"DJ Fabulous", show:"Guest DJ", slot:"Guest", bio:"DJ Fabulous is a vibrant force behind the decks, known for crafting feel-good sets that blend soulful house, disco, funky tunes and good grooves into a seamless musical journey. His sound is rooted in rhythm, warmth and positive energy — the kind of vibe that fills dance floors and lifts spirits. With an ear for timeless melody and a deep appreciation for groove, DJ Fabulous brings together the golden era of disco, the soul of classic house and the funk of modern edits.", genre:"Soulful House / Disco / Funk", resident:false },
+  { name:"Dave Newsome", aka:"", show:"Guest DJ", slot:"Guest", bio:"DJ Dave Newsome is a Leeds-based DJ known for his eclectic mixes of disco, house and soulful music. He has been active in the music scene for over a decade, sharing his mixes on platforms like SoundCloud, Mixcloud, House-Mixes.com and YouTube. His mixes showcase his ability to curate vibrant and danceable sets that resonate with a wide audience.", genre:"Disco / House / Soulful", resident:false },
+  { name:"Paul Mulholland", aka:"", show:"Guest DJ", slot:"Guest", bio:"Growing up in Glasgow, Scotland — a city that knows how to party — Paul was fortunate to be immersed in the sounds of artists who would go on to shape his musical direction. A true product of Glasgow's legendary club scene, Paul brings that unmistakable Scottish energy and passion for music to every set.", genre:"Disco / House", resident:false },
 ];
 
 // ═══ FALLBACK SCHEDULE (used if website fetch fails) ═══
@@ -546,25 +546,22 @@ function renderSchedule() {
 }
 
 function renderDJs() {
-  const filtered = djFilter==='All'?allDJs:djFilter==='Residents'?allDJs.filter(d=>d.resident):allDJs.filter(d=>!d.resident);
   return `
     <h2 style="font-size:20px;font-weight:900;margin-bottom:2px">OUR <span style="color:var(--cyan)">DJs</span></h2>
-    <p style="font-size:11px;color:var(--textMuted);margin-bottom:12px">${allDJs.length} DJs — the crew behind the groove</p>
-    <div class="chip-scroll">
-      ${['All','Residents','Guests'].map(f=>`<span class="chip ${djFilter===f?'active':''}" onclick="djFilter='${f}';expandedDJ=null;renderScreen('djs')">${f}</span>`).join('')}
-    </div>
+    <p style="font-size:11px;color:var(--textMuted);margin-bottom:14px">${allDJs.length} DJs — the crew behind the groove</p>
     <div style="display:flex;flex-direction:column;gap:10px">
-      ${filtered.map((dj,i) => {
+      ${allDJs.map((dj,i) => {
         const isExp = expandedDJ===dj.name;
         const deg = 135+i*20;
         const esc = dj.name.replace(/'/g,"\\'");
+        const displayName = dj.aka || dj.name;
         return `
           <div class="card ${dj.isYou?'card-glow':''}" style="padding:13px;cursor:pointer" onclick="expandedDJ=expandedDJ==='${esc}'?null:'${esc}';renderScreen('djs')">
             <div style="display:flex;align-items:center;gap:11px">
               <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(${deg}deg,var(--purple),var(--magenta));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎧</div>
               <div style="flex:1;min-width:0">
                 <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
-                  <span style="font-size:13px;font-weight:700">${dj.aka||dj.name}</span>
+                  <span style="font-size:13px;font-weight:700">${displayName}</span>
                   ${dj.isYou?'<span class="you-badge">YOU</span>':''}
                 </div>
                 ${dj.aka?`<div style="font-size:10px;color:var(--textDim)">${dj.name}</div>`:''}
@@ -745,7 +742,12 @@ function dismissInstall() {
 
 // ── SERVICE WORKER (only works when hosted on a real server) ──
 if ('serviceWorker' in navigator && location.hostname !== 'localhost' && !location.hostname.includes('claudeusercontent')) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    // Check for updates every time the app loads
+    reg.update();
+    // Also check every 5 minutes while app is open
+    setInterval(() => reg.update(), 5 * 60 * 1000);
+  }).catch(() => {});
 }
 
 // ── INIT ──
