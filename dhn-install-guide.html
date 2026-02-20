@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Get the DHN App</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --cyan: #0AC9DB; --magenta: #E056D7; --purple: #7B2FBE; --bg: #040517; --card: #212049; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Poppins', sans-serif; background: var(--bg); color: #fff; min-height: 100vh; }
+
+.header {
+  text-align: center; padding: 40px 20px 20px;
+  background: linear-gradient(180deg, #0d0d2b, var(--bg));
+}
+.header .ball { font-size: 60px; filter: drop-shadow(0 0 30px rgba(10,201,219,0.4)); }
+.header h1 { font-size: 28px; font-weight: 900; }
+.header h1 span { color: var(--cyan); }
+.header p { font-size: 12px; color: var(--magenta); font-weight: 600; letter-spacing: 3px; margin-top: 4px; }
+
+.container { max-width: 500px; margin: 0 auto; padding: 20px; }
+
+.url-box {
+  text-align: center; padding: 18px; margin-bottom: 24px;
+  background: rgba(10,201,219,0.06); border: 2px solid rgba(10,201,219,0.3);
+  border-radius: 16px;
+}
+.url-box .label { font-size: 10px; color: rgba(255,255,255,0.4); font-weight: 600; letter-spacing: 2px; margin-bottom: 6px; }
+.url-box a { font-size: 18px; font-weight: 800; color: var(--cyan); text-decoration: none; word-break: break-all; }
+.url-box .tap { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 8px; }
+
+/* Tab switcher */
+.tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+.tab {
+  flex: 1; padding: 12px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.08);
+  background: var(--card); text-align: center; cursor: pointer; transition: all 0.2s;
+}
+.tab.active { border-color: var(--cyan); background: rgba(10,201,219,0.08); }
+.tab .icon { font-size: 24px; }
+.tab .name { font-size: 11px; font-weight: 700; margin-top: 2px; color: rgba(255,255,255,0.5); }
+.tab.active .name { color: var(--cyan); }
+
+/* Steps */
+.guide { display: none; }
+.guide.active { display: block; }
+
+.step {
+  background: var(--card); border-radius: 18px; padding: 20px;
+  margin-bottom: 14px; border: 1px solid rgba(10,201,219,0.1);
+  animation: slideIn 0.4s ease forwards;
+  opacity: 0;
+}
+.step:nth-child(1) { animation-delay: 0.1s; }
+.step:nth-child(2) { animation-delay: 0.3s; }
+.step:nth-child(3) { animation-delay: 0.5s; }
+.step:nth-child(4) { animation-delay: 0.7s; }
+
+@keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.step-num {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--cyan), #6EE8F3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 900; color: #000;
+}
+.step-title { font-size: 15px; font-weight: 700; }
+.step-body { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.7; padding-left: 48px; }
+
+/* Visual mockup */
+.phone-mock {
+  width: 220px; height: 140px; margin: 12px auto 0;
+  background: #1a1a3e; border-radius: 16px; border: 2px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+}
+.phone-mock .safari-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 28px;
+  background: #2a2a4e; display: flex; align-items: center; justify-content: center;
+  font-size: 8px; color: rgba(255,255,255,0.4);
+}
+.phone-mock .share-icon {
+  position: absolute; bottom: 10px; right: 14px;
+  font-size: 18px; animation: bounce 1.5s ease infinite;
+}
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+.phone-mock .menu-highlight {
+  position: absolute; top: 34px; left: 10px; right: 10px;
+  background: rgba(10,201,219,0.1); border: 1px solid rgba(10,201,219,0.3);
+  border-radius: 8px; padding: 6px 10px; font-size: 9px; color: var(--cyan); font-weight: 700;
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+.phone-mock .home-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--purple), var(--magenta));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; box-shadow: 0 2px 10px rgba(224,86,215,0.3);
+}
+
+/* Success state */
+.success {
+  text-align: center; padding: 24px; margin-top: 10px;
+  background: linear-gradient(135deg, rgba(10,201,219,0.08), rgba(224,86,215,0.05));
+  border: 1px solid rgba(10,201,219,0.2); border-radius: 18px;
+}
+.success .check { font-size: 40px; margin-bottom: 8px; }
+.success h3 { font-size: 16px; font-weight: 800; color: var(--cyan); }
+.success p { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+.footer { text-align: center; padding: 30px 20px; font-size: 10px; color: rgba(255,255,255,0.2); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="ball">🪩</div>
+  <h1>DISCO HOUSE <span>NATION</span></h1>
+  <p>HOW TO GET THE APP</p>
+</div>
+
+<div class="container">
+  <!-- URL Box -->
+  <div class="url-box">
+    <div class="label">STEP 1 — OPEN THIS LINK</div>
+    <a href="https://discohousenation.netlify.app" target="_blank">discohousenation.netlify.app</a>
+    <div class="tap">Tap the link above to open it now!</div>
+  </div>
+
+  <!-- Device tabs -->
+  <div class="tabs">
+    <div class="tab active" onclick="showGuide('iphone', this)">
+      <div class="icon">📱</div>
+      <div class="name">iPhone</div>
+    </div>
+    <div class="tab" onclick="showGuide('android', this)">
+      <div class="icon">🤖</div>
+      <div class="name">Android</div>
+    </div>
+    <div class="tab" onclick="showGuide('desktop', this)">
+      <div class="icon">💻</div>
+      <div class="name">Desktop</div>
+    </div>
+  </div>
+
+  <!-- iPhone Guide -->
+  <div class="guide active" id="guide-iphone">
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Open in Safari</div>
+      </div>
+      <div class="step-body">
+        Open <strong>discohousenation.netlify.app</strong> in Safari (it must be Safari, not Chrome or other browsers).
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Tap the Share button</div>
+      </div>
+      <div class="step-body">
+        Tap the <strong>Share icon</strong> at the bottom of Safari (the square with an arrow pointing up).
+      </div>
+      <div class="phone-mock">
+        <div class="safari-bar">discohousenation.netlify.app</div>
+        <div class="share-icon">⬆️</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div class="step-title">Add to Home Screen</div>
+      </div>
+      <div class="step-body">
+        Scroll down in the share menu and tap <strong>"Add to Home Screen"</strong>. Then tap <strong>"Add"</strong> in the top right.
+      </div>
+      <div class="phone-mock">
+        <div class="safari-bar">Share Menu</div>
+        <div class="menu-highlight">➕ Add to Home Screen</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">4</div>
+        <div class="step-title">Done! Open from Home Screen</div>
+      </div>
+      <div class="step-body">
+        The DHN app icon now appears on your home screen. Tap it to open — it runs full screen, just like a real app!
+      </div>
+      <div class="phone-mock" style="background:#000">
+        <div class="home-icon">🪩</div>
+      </div>
+    </div>
+
+    <div class="success">
+      <div class="check">🎉</div>
+      <h3>You're all set!</h3>
+      <p>Hit play and enjoy live disco & house 24/7</p>
+    </div>
+  </div>
+
+  <!-- Android Guide -->
+  <div class="guide" id="guide-android">
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Open in Chrome</div>
+      </div>
+      <div class="step-body">
+        Open <strong>discohousenation.netlify.app</strong> in Chrome (it should prompt you automatically).
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Tap "Install" or use the menu</div>
+      </div>
+      <div class="step-body">
+        You may see an <strong>"Install app"</strong> banner at the bottom — tap it! If not, tap the <strong>three dots menu</strong> (top right) → <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong>.
+      </div>
+      <div class="phone-mock">
+        <div class="safari-bar">Chrome • ⋮</div>
+        <div class="menu-highlight">📲 Install app</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div class="step-title">Confirm the install</div>
+      </div>
+      <div class="step-body">
+        Tap <strong>"Install"</strong> on the confirmation dialog. The app icon will appear on your home screen.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">4</div>
+        <div class="step-title">Done! Open from Home Screen</div>
+      </div>
+      <div class="step-body">
+        Find the DHN icon on your home screen and tap it. Full screen, no browser bar — just music!
+      </div>
+      <div class="phone-mock" style="background:#000">
+        <div class="home-icon">🪩</div>
+      </div>
+    </div>
+
+    <div class="success">
+      <div class="check">🎉</div>
+      <h3>You're all set!</h3>
+      <p>Hit play and enjoy live disco & house 24/7</p>
+    </div>
+  </div>
+
+  <!-- Desktop Guide -->
+  <div class="guide" id="guide-desktop">
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Just bookmark it!</div>
+      </div>
+      <div class="step-body">
+        Open <strong>discohousenation.netlify.app</strong> in any browser. Bookmark it for quick access. That's literally it — it works like any website on desktop.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">💡</div>
+        <div class="step-title">Pro tip: Install as app</div>
+      </div>
+      <div class="step-body">
+        In Chrome, click the <strong>install icon</strong> in the address bar (or Menu → "Install Disco House Nation"). This gives you a standalone window without browser tabs.
+      </div>
+    </div>
+
+    <div class="success">
+      <div class="check">🎉</div>
+      <h3>You're all set!</h3>
+      <p>Hit play and enjoy live disco & house 24/7</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  © Disco House Nation 2025 • discohousenation.com
+</div>
+
+<script>
+function showGuide(id, el) {
+  document.querySelectorAll('.guide').forEach(g => g.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('guide-' + id).classList.add('active');
+  el.classList.add('active');
+  // Re-trigger animations
+  document.querySelectorAll('#guide-' + id + ' .step').forEach(s => {
+    s.style.animation = 'none';
+    s.offsetHeight;
+    s.style.animation = '';
+  });
+}
+</script>
+</body>
+</html>
