@@ -2,40 +2,50 @@ exports.handler = async function(event, context) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json',
-    'Cache-Control': 'public, max-age=1800' // Caching restored to 30 mins
+    'Cache-Control': 'public, max-age=1800' 
   };
   
   try {
-    // 1. Fetch using modern API to bypass blocks and follow redirects
+    // 1. Fetch using modern API, forcing their server to bypass its own cache
     const response = await fetch('https://www.discohousenation.com/', {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache'
       }
     });
     
     let html = await response.text();
 
-    // 2. THE FIX: Decode WordPress HTML entities before parsing
+    // 2. NUKE THE ZOMBIES: Remove HTML comments so old DJs stay dead
+    html = html.replace(//g, ' ');
+
+    // 3. Nuke scripts and styles
+    html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
+    html = html.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
+
+    // 4. Decode WordPress HTML entities
     html = html.replace(/&#8211;/g, '-')
                .replace(/&#8212;/g, '-')
                .replace(/&ndash;/g, '-')
                .replace(/&mdash;/g, '-')
-               .replace(/&#8217;/g, "'") // The apostrophe fix
+               .replace(/&#8217;/g, "'") 
                .replace(/&amp;/g, '&')
                .replace(/&nbsp;/g, ' ');
-
-    // 3. Nuke scripts and styles
-    let cleanHtml = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
-    cleanHtml = cleanHtml.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
     
-    // 4. Strip tags and crush spaces
-    let rawText = cleanHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+    // 5. Strip tags and crush spaces
+    let rawText = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 
     const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY', 'LISTEN NOW'];
     const schedule = {};
     let totalSlots = 0;
 
-    // 5. Slice up the text block day by day
+    // Isolate schedule block
+    const startIdx = rawText.search(/DJ SCHEDULE/i);
+    if (startIdx !== -1) {
+      rawText = rawText.substring(startIdx);
+    }
+
     for (let i = 0; i < 7; i++) {
       const currentDay = days[i];
       const nextDay = days[i + 1];
@@ -59,8 +69,51 @@ exports.handler = async function(event, context) {
       const dayContent = rawText.substring(dayStartPos + currentDay.length, endPos).trim();
       const slots = [];
 
-      // 6. Regex looking for literal dashes (which we just restored)
       const slotRegex = /(\d{1,2}(?:[:,.]\d{2})?\s*(?:am|pm|AM|PM))\s*[-–—]\s*(.*?)(?=\s*\d{1,2}(?:[:,.]\d{2})?\s*(?:am|pm|AM|PM)|$)/gi;
 
       let match;
-      while ((match = slotRegex.exec(dayContent))
+      while ((match = slotRegex.exec(dayContent)) !== null) {
+        let time = match[1].trim().toLowerCase().replace(/\s+/g, '');
+        let restInfo = match[2].trim();
+
+        let parts = restInfo.split(/\s*[-–—]\s*/);
+        let dj = parts[0] ? parts[0].trim() : '';
+        let show = parts[1] ? parts.slice(1).join(' - ').trim() : '';
+
+        if (dj) {
+          const slot = { time, dj };
+          if (show) slot.show = show;
+          slots.push(slot);
+          totalSlots++;
+        }
+      }
+
+      if (slots.length > 0) {
+        const dayProper = currentDay.charAt(0) + currentDay.slice(1).toLowerCase();
+        schedule[dayProper] = slots;
+      }
+    }
+
+    const dayCount = Object.keys(schedule).length;
+    if (dayCount < 3 || totalSlots === 0) {
+      throw new Error(`Parsed ${dayCount} days and ${totalSlots} slots - checking for ghosts`);
+    }
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        schedule,
+        updated: new Date().toISOString(),
+        source: 'live',
+        days: dayCount,
+      }),
+    };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: err.message, source: 'error' }),
+    };
+  }
+};
