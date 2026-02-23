@@ -6,7 +6,7 @@ exports.handler = async function(event, context) {
   };
   
   try {
-    // 1. Fetch using modern API, forcing their server to bypass its own cache
+    // 1. Fetch using modern API to follow redirects and bypass basic bot blocks
     const response = await fetch('https://www.discohousenation.com/', {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
@@ -17,14 +17,15 @@ exports.handler = async function(event, context) {
     
     let html = await response.text();
 
-    // 2. NUKE THE ZOMBIES: This line must have the comment tags inside the slashes
-    html = html.replace(//g, ' ');
+    // 2. NUKE THE ZOMBIES: Using Hex codes so GitHub doesn't eat the regex
+    // This finds and removes everything between them
+    html = html.replace(/\x3C\x21\x2D\x2D[\s\S]*?\x2D\x2D\x3E/g, ' ');
 
     // 3. Nuke scripts and styles
     html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
     html = html.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
 
-    // 4. Decode WordPress HTML entities
+    // 4. Decode WordPress HTML entities (The "Miss G" apostrophe fix)
     html = html.replace(/&#8211;/g, '-')
                .replace(/&#8212;/g, '-')
                .replace(/&ndash;/g, '-')
@@ -40,7 +41,7 @@ exports.handler = async function(event, context) {
     const schedule = {};
     let totalSlots = 0;
 
-    // Isolate schedule block
+    // Isolate schedule block to avoid parsing headers/footers
     const startIdx = rawText.search(/DJ SCHEDULE/i);
     if (startIdx !== -1) {
       rawText = rawText.substring(startIdx);
@@ -69,6 +70,7 @@ exports.handler = async function(event, context) {
       const dayContent = rawText.substring(dayStartPos + currentDay.length, endPos).trim();
       const slots = [];
 
+      // Look for "Time - DJ - Show" pattern
       const slotRegex = /(\d{1,2}(?:[:,.]\d{2})?\s*(?:am|pm|AM|PM))\s*[-–—]\s*(.*?)(?=\s*\d{1,2}(?:[:,.]\d{2})?\s*(?:am|pm|AM|PM)|$)/gi;
 
       let match;
@@ -96,7 +98,7 @@ exports.handler = async function(event, context) {
 
     const dayCount = Object.keys(schedule).length;
     if (dayCount < 3 || totalSlots === 0) {
-      throw new Error(`Parsed ${dayCount} days and ${totalSlots} slots - checking for ghosts`);
+      throw new Error(`Parsed ${dayCount} days and ${totalSlots} slots - check source formatting`);
     }
 
     return {
