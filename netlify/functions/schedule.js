@@ -2,41 +2,108 @@ exports.handler = async function(event, context) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache' // No caching while we debug
+    'Cache-Control': 'public, max-age=1800' // Caching restored!
   };
   
   try {
-    // Using native fetch: it handles redirects and we disguise it as Chrome
+    // 1. Fetch using modern API to bypass blocks and follow redirects
     const response = await fetch('https://www.discohousenation.com/', {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
       }
     });
     
-    const html = await response.text();
+    let html = await response.text();
+
+    // 2. THE FIX: Decode WordPress HTML entities before parsing
+    html = html.replace(/&#8211;/g, '-')
+               .replace(/&#8212;/g, '-')
+               .replace(/&ndash;/g, '-')
+               .replace(/&mdash;/g, '-')
+               .replace(/&amp;/g, '&')
+               .replace(/&nbsp;/g, ' ');
+
+    // 3. Nuke scripts and styles
+    let cleanHtml = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
+    cleanHtml = cleanHtml.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
     
-    // Let's X-Ray exactly what we got back
+    // 4. Strip tags and crush spaces
+    let rawText = cleanHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+
+    const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY', 'LISTEN NOW'];
+    const schedule = {};
+    let totalSlots = 0;
+
+    // 5. Slice up the text block day by day
+    for (let i = 0; i < 7; i++) {
+      const currentDay = days[i];
+      const nextDay = days[i + 1];
+
+      const startRegex = new RegExp('\\b' + currentDay + '\\b', 'i');
+      const endRegex = new RegExp('\\b' + nextDay + '\\b', 'i');
+
+      const startMatch = rawText.match(startRegex);
+      if (!startMatch) continue;
+
+      const dayStartPos = startMatch.index;
+      let endPos = rawText.length;
+
+      const textAfterCurrent = rawText.substring(dayStartPos + currentDay.length);
+      const endMatch = textAfterCurrent.match(endRegex);
+
+      if (endMatch) {
+        endPos = dayStartPos + currentDay.length + endMatch.index;
+      }
+
+      const dayContent = rawText.substring(dayStartPos + currentDay.length, endPos).trim();
+      const slots = [];
+
+      // 6. Regex looking for literal dashes (which we just restored)
+      const slotRegex = /(\d{1,2}(?:[:,.]\d{2})?\s*(?:am|pm|AM|PM))\s*[-–—]\s*(.*?)(?=\s*\d{1,2}(?:[:,.]\d{2})?\s*(?:am|pm|AM|PM)|$)/gi;
+
+      let match;
+      while ((match = slotRegex.exec(dayContent)) !== null) {
+        let time = match[1].trim().toLowerCase().replace(/\s+/g, '');
+        let restInfo = match[2].trim();
+
+        let parts = restInfo.split(/\s*[-–—]\s*/);
+        let dj = parts[0] ? parts[0].trim() : '';
+        let show = parts[1] ? parts.slice(1).join(' - ').trim() : '';
+
+        if (dj) {
+          const slot = { time, dj };
+          if (show) slot.show = show;
+          slots.push(slot);
+          totalSlots++;
+        }
+      }
+
+      if (slots.length > 0) {
+        const dayProper = currentDay.charAt(0) + currentDay.slice(1).toLowerCase();
+        schedule[dayProper] = slots;
+      }
+    }
+
+    const dayCount = Object.keys(schedule).length;
+    if (dayCount < 3 || totalSlots === 0) {
+      throw new Error(`Parsed ${dayCount} days and ${totalSlots} slots - WordPress entities might have changed`);
+    }
+
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        diagnostic_mode: true,
-        http_status: response.status,
-        was_redirected: response.redirected,
-        final_url: response.url,
-        html_file_size: html.length,
-        contains_monday: html.toUpperCase().includes('MONDAY'),
-        contains_schedule: html.toUpperCase().includes('DJ SCHEDULE'),
-        // Spitting out the first 500 characters so we can read the server's response
-        html_preview: html.substring(0, 500) 
-      })
+        schedule,
+        updated: new Date().toISOString(),
+        source: 'live',
+        days: dayCount,
+      }),
     };
   } catch (err) {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: err.message })
+      body: JSON.stringify({ error: err.message, source: 'error' }),
     };
   }
 };
