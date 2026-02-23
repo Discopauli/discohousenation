@@ -2,7 +2,7 @@ exports.handler = async function(event, context) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json',
-    'Cache-Control': 'public, max-age=1800' // Caching restored!
+    'Cache-Control': 'public, max-age=1800' // Caching restored to 30 mins
   };
   
   try {
@@ -20,6 +20,7 @@ exports.handler = async function(event, context) {
                .replace(/&#8212;/g, '-')
                .replace(/&ndash;/g, '-')
                .replace(/&mdash;/g, '-')
+               .replace(/&#8217;/g, "'") // The apostrophe fix
                .replace(/&amp;/g, '&')
                .replace(/&nbsp;/g, ' ');
 
@@ -62,48 +63,4 @@ exports.handler = async function(event, context) {
       const slotRegex = /(\d{1,2}(?:[:,.]\d{2})?\s*(?:am|pm|AM|PM))\s*[-–—]\s*(.*?)(?=\s*\d{1,2}(?:[:,.]\d{2})?\s*(?:am|pm|AM|PM)|$)/gi;
 
       let match;
-      while ((match = slotRegex.exec(dayContent)) !== null) {
-        let time = match[1].trim().toLowerCase().replace(/\s+/g, '');
-        let restInfo = match[2].trim();
-
-        let parts = restInfo.split(/\s*[-–—]\s*/);
-        let dj = parts[0] ? parts[0].trim() : '';
-        let show = parts[1] ? parts.slice(1).join(' - ').trim() : '';
-
-        if (dj) {
-          const slot = { time, dj };
-          if (show) slot.show = show;
-          slots.push(slot);
-          totalSlots++;
-        }
-      }
-
-      if (slots.length > 0) {
-        const dayProper = currentDay.charAt(0) + currentDay.slice(1).toLowerCase();
-        schedule[dayProper] = slots;
-      }
-    }
-
-    const dayCount = Object.keys(schedule).length;
-    if (dayCount < 3 || totalSlots === 0) {
-      throw new Error(`Parsed ${dayCount} days and ${totalSlots} slots - WordPress entities might have changed`);
-    }
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        schedule,
-        updated: new Date().toISOString(),
-        source: 'live',
-        days: dayCount,
-      }),
-    };
-  } catch (err) {
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: err.message, source: 'error' }),
-    };
-  }
-};
+      while ((match = slotRegex.exec(dayContent))
