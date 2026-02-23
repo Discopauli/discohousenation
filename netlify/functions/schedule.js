@@ -17,7 +17,7 @@ exports.handler = async function(event, context) {
     
     let html = await response.text();
 
-    // 2. NUKE THE ZOMBIES: Remove HTML comments so old DJs stay dead
+    // 2. NUKE THE ZOMBIES: This line must have the comment tags inside the slashes
     html = html.replace(//g, ' ');
 
     // 3. Nuke scripts and styles
