@@ -1,232 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="DHN Radio">
-<meta name="theme-color" content="#040517">
-<meta name="description" content="Disco House Nation — Live Disco & House Music 24/7">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
-<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
-<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-<title>Disco House Nation</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #040517;
-  --bgCard: #212049;
-  --bgCard2: #1a1a3e;
-  --cyan: #0AC9DB;
-  --cyanLight: #6EE8F3;
-  --magenta: #E056D7;
-  --purple: #7B2FBE;
-  --textMuted: rgba(255,255,255,0.5);
-  --textDim: rgba(255,255,255,0.3);
-  --border: rgba(10,201,219,0.12);
-  --borderActive: rgba(10,201,219,0.4);
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; overflow: hidden; }
-body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg); color: #fff;
-  display: flex; flex-direction: column;
-  padding-top: var(--safe-top);
-  padding-bottom: var(--safe-bottom);
-}
-::-webkit-scrollbar { width: 0; }
-button { font-family: inherit; }
-a { color: var(--cyan); text-decoration: none; }
-
-/* ═══ ANIMATIONS ═══ */
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes barPulse {
-  0%, 100% { transform: scaleY(0.3); }
-  50% { transform: scaleY(1); }
-}
-
-/* ═══ SPLASH SCREEN ═══ */
-#splash {
-  position: fixed; inset: 0; z-index: 200;
-  background: var(--bg);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.5s ease;
-}
-#splash.hidden { opacity: 0; pointer-events: none; }
-#splash .logo { font-size: 72px; animation: spin 3s linear infinite; margin-bottom: 20px;
-  filter: drop-shadow(0 0 40px rgba(10,201,219,0.4)) drop-shadow(0 0 20px rgba(224,86,215,0.3)); }
-#splash h1 { font-size: 22px; font-weight: 900; letter-spacing: 1px; }
-#splash h1 span { color: var(--cyan); }
-#splash p { font-size: 10px; color: var(--magenta); font-weight: 600; letter-spacing: 3px; margin-top: 8px; text-transform: uppercase; }
-
-/* ═══ SCREENS ═══ */
-.screen {
-  flex: 1; overflow-y: auto; overflow-x: hidden;
-  padding: 16px 18px 0;
-  -webkit-overflow-scrolling: touch;
-  background: linear-gradient(180deg, #0d0d2b 0%, var(--bg) 100%);
-  display: none;
-  animation: fadeIn 0.3s ease;
-}
-.screen.active { display: block; }
-
-/* ═══ NOW PLAYING BAR ═══ */
-#nowPlaying {
-  background: linear-gradient(135deg, rgba(33,32,73,0.97), rgba(123,47,190,0.3));
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
-  border-top: 1px solid var(--borderActive);
-  flex-shrink: 0; min-height: 62px;
-}
-.np-art {
-  width: 42px; height: 42px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--purple), var(--magenta));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; flex-shrink: 0;
-}
-.np-art.playing { animation: spin 3s linear infinite; }
-.np-info { flex: 1; min-width: 0; }
-.np-label { font-size: 10px; color: var(--cyan); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-.np-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.np-btn {
-  width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer;
-  background: linear-gradient(135deg, var(--cyan), var(--cyanLight));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; color: #000; flex-shrink: 0; font-weight: 900;
-}
-.np-vol {
-  width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer;
-  background: rgba(255,255,255,0.08); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; flex-shrink: 0;
-}
-
-/* ═══ BOTTOM NAV ═══ */
-#bottomNav {
-  background: rgba(4,5,23,0.98); backdrop-filter: blur(20px);
-  display: flex; align-items: center; justify-content: space-around;
-  border-top: 1px solid rgba(10,201,219,0.08);
-  padding: 6px 0 calc(8px + var(--safe-bottom));
-  flex-shrink: 0;
-}
-.nav-btn {
-  background: none; border: none; cursor: pointer;
-  display: flex; flex-direction: column; align-items: center; gap: 1px;
-  padding: 4px 12px; opacity: 0.4; transition: all 0.2s ease;
-}
-.nav-btn.active { opacity: 1; transform: scale(1.05); }
-.nav-btn .icon { font-size: 22px; }
-.nav-btn .label { font-size: 9px; font-weight: 700; color: #666; }
-.nav-btn.active .label { color: var(--cyan); }
-.nav-dot { width: 4px; height: 4px; border-radius: 2px; background: var(--cyan); }
-
-/* ═══ REUSABLE COMPONENTS ═══ */
-.card { background: var(--bgCard); border-radius: 16px; border: 1px solid var(--border); }
-.card-glow { border-color: rgba(224,86,215,0.35); background: linear-gradient(135deg, rgba(123,47,190,0.22), rgba(224,86,215,0.1)); box-shadow: 0 4px 20px rgba(224,86,215,0.12); }
-.section-title { font-size: 14px; font-weight: 700; color: var(--cyan); letter-spacing: 1px; margin-bottom: 12px; }
-.section-line { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-.section-line .line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
-
-.live-badge {
-  display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px;
-  background: rgba(220,50,50,0.15); border: 1px solid rgba(220,50,50,0.3);
-  font-size: 10px; font-weight: 700; color: #ff5555; letter-spacing: 1px;
-}
-.live-dot { width: 6px; height: 6px; border-radius: 3px; background: #ff5555; animation: pulse 1.5s ease infinite; }
-.you-badge { padding: 3px 8px; border-radius: 6px; font-size: 8px; font-weight: 800; background: rgba(224,86,215,0.2); color: var(--magenta); letter-spacing: 0.5px; border: 1px solid rgba(224,86,215,0.25); }
-
-.chip-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; }
-.chip {
-  padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600;
-  background: var(--bgCard); color: var(--textMuted); cursor: pointer;
-  border: 1px solid var(--border); white-space: nowrap; flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-.chip.active { background: linear-gradient(135deg, var(--cyan), var(--cyanLight)); color: #000; border-color: transparent; box-shadow: 0 2px 10px rgba(10,201,219,0.3); }
-
-.visualizer { display: flex; gap: 2px; align-items: flex-end; height: 24px; }
-.viz-bar {
-  flex: 1; border-radius: 1.5px; transform-origin: bottom;
-  animation: barPulse 0.8s ease infinite;
-}
-
-/* ═══ INSTALL BANNER ═══ */
-#installBanner {
-  display: none; padding: 12px 16px; margin: 0 0 12px;
-  background: linear-gradient(135deg, rgba(10,201,219,0.1), rgba(123,47,190,0.1));
-  border: 1px solid var(--borderActive); border-radius: 14px;
-  align-items: center; gap: 10px;
-}
-#installBanner.show { display: flex; }
-#installBanner .msg { flex: 1; font-size: 12px; color: var(--textMuted); }
-#installBanner .msg strong { color: #fff; }
-#installBtn {
-  padding: 6px 16px; border-radius: 10px; border: none;
-  background: linear-gradient(135deg, var(--cyan), var(--cyanLight));
-  color: #000; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;
-}
-#installDismiss { background: none; border: none; color: var(--textDim); cursor: pointer; font-size: 16px; }
-
-/* ═══ SPACER ═══ */
-.bottom-spacer { height: 20px; flex-shrink: 0; }
-</style>
-</head>
-<body>
-
-<!-- ═══ SPLASH ═══ -->
-<div id="splash">
-  <img src="icons/logo-round.png" style="width:120px;height:120px;border-radius:50%;animation:spin 3s linear infinite;filter:drop-shadow(0 0 40px rgba(10,201,219,0.4)) drop-shadow(0 0 20px rgba(224,86,215,0.3));margin-bottom:20px" alt="DHN">
-  <h1>DISCO HOUSE <span>NATION</span></h1>
-  <p>Loading the groove...</p>
-</div>
-
-<!-- ═══ SCREENS ═══ -->
-<div class="screen active" id="screen-home"></div>
-<div class="screen" id="screen-schedule"></div>
-<div class="screen" id="screen-djs"></div>
-<div class="screen" id="screen-mixes"></div>
-<div class="screen" id="screen-chat"></div>
-
-<!-- ═══ NOW PLAYING ═══ -->
-<div id="nowPlaying">
-  <div class="np-art" id="npArt"><img src="icons/logo.png" style="width:36px;height:36px;object-fit:contain;border-radius:6px" alt=""></div>
-  <div class="np-info">
-    <div class="np-label" id="npLabel">● LIVE</div>
-    <div class="np-title" id="npTitle">Disco House Nation — 24/7 Disco & House</div>
-  </div>
-  <button class="np-vol" id="volBtn" onclick="toggleMute()">🔊</button>
-  <button class="np-btn" id="playBtn" onclick="togglePlay()">▶</button>
-</div>
-
-<!-- ═══ BOTTOM NAV ═══ -->
-<div id="bottomNav"></div>
-
-<!-- ═══ AUDIO ═══ -->
-<audio id="audioPlayer" preload="none"></audio>
-
-<script>
-// ═══════════════════════════════════════════════════════
-// DISCO HOUSE NATION PWA
-// ═══════════════════════════════════════════════════════
-
-// ── STREAM CONFIG ──
-// Confirmed stream URL from AzuraCast public page (port 8172)
-const STREAM_URLS = [
-  'https://hello.citrus3.com:2020/8172/stream',
-];
-// Public player page (used as iframe fallback)
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"> <meta name="apple-mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <meta name="apple-mobile-web-app-title" content="DHN Radio"> <meta name="theme-color" content="#040517"> <meta name="description" content="Disco House Nation — Live Disco & House Music 24/7"> <link rel="manifest" href="manifest.json"> <link rel="apple-touch-icon" href="icons/icon-180.png"> <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png"> <link rel="icon" type="image/svg+xml" href="icons/icon.svg"> <title>Disco House Nation</title> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"> <style> :root { --bg: #040517; --bgCard: #212049; --bgCard2: #1a1a3e; --cyan: #0AC9DB; --cyanLight: #6EE8F3; --magenta: #E056D7; --purple: #7B2FBE; --textMuted: rgba(255,255,255,0.5); --textDim: rgba(255,255,255,0.3); --border: rgba(10,201,219,0.12); --borderActive: rgba(10,201,219,0.4); --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); } * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; } html, body { height: 100%; overflow: hidden; } body { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: #fff; display: flex; flex-direction: column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); } ::-webkit-scrollbar { width: 0; } button { font-family: inherit; } a { color: var(--cyan); text-decoration: none; } @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } } @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } } @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } } @keyframes barPulse { 0%, 100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } } @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } } #splash { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; } #splash.hidden { opacity: 0; pointer-events: none; } #splash .logo { font-size: 72px; animation: spin 3s linear infinite; margin-bottom: 20px; filter: drop-shadow(0 0 40px rgba(10,201,219,0.4)) drop-shadow(0 0 20px rgba(224,86,215,0.3)); } #splash h1 { font-size: 22px; font-weight: 900; letter-spacing: 1px; } #splash h1 span { color: var(--cyan); } #splash p { font-size: 10px; color: var(--magenta); font-weight: 600; letter-spacing: 3px; margin-top: 8px; text-transform: uppercase; } .screen { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 16px 18px 0; -webkit-overflow-scrolling: touch; background: linear-gradient(180deg, #0d0d2b 0%, var(--bg) 100%); display: none; animation: fadeIn 0.3s ease; } .screen.active { display: block; } #nowPlaying { background: linear-gradient(135deg, rgba(33,32,73,0.97), rgba(123,47,190,0.3)); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--borderActive); flex-shrink: 0; min-height: 62px; } .np-art { width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, var(--purple), var(--magenta)); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; overflow: hidden; } .np-art.playing { animation: spin 3s linear infinite; } .np-info { flex: 1; min-width: 0; } .np-label { font-size: 10px; color: var(--cyan); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; } .np-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .np-subtitle { font-size: 10px; color: var(--textMuted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; } .np-btn { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; background: linear-gradient(135deg, var(--cyan), var(--cyanLight)); display: flex; align-items: center; justify-content: center; font-size: 18px; color: #000; flex-shrink: 0; font-weight: 900; } .np-vol { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; background: rgba(255,255,255,0.08); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; } #bottomNav { background: rgba(4,5,23,0.98); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-around; border-top: 1px solid rgba(10,201,219,0.08); padding: 6px 0 calc(8px + var(--safe-bottom)); flex-shrink: 0; } .nav-btn { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 4px 12px; opacity: 0.4; transition: all 0.2s ease; } .nav-btn.active { opacity: 1; transform: scale(1.05); } .nav-btn .icon { font-size: 22px; } .nav-btn .label { font-size: 9px; font-weight: 700; color: #666; } .nav-btn.active .label { color: var(--cyan); } .nav-dot { width: 4px; height: 4px; border-radius: 2px; background: var(--cyan); } .card { background: var(--bgCard); border-radius: 16px; border: 1px solid var(--border); } .card-glow { border-color: rgba(224,86,215,0.35); background: linear-gradient(135deg, rgba(123,47,190,0.22), rgba(224,86,215,0.1)); box-shadow: 0 4px 20px rgba(224,86,215,0.12); } .section-title { font-size: 14px; font-weight: 700; color: var(--cyan); letter-spacing: 1px; margin-bottom: 12px; } .section-line { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; } .section-line .line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); } .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; background: rgba(220,50,50,0.15); border: 1px solid rgba(220,50,50,0.3); font-size: 10px; font-weight: 700; color: #ff5555; letter-spacing: 1px; } .live-dot { width: 6px; height: 6px; border-radius: 3px; background: #ff5555; animation: pulse 1.5s ease infinite; } .you-badge { padding: 3px 8px; border-radius: 6px; font-size: 8px; font-weight: 800; background: rgba(224,86,215,0.2); color: var(--magenta); letter-spacing: 0.5px; border: 1px solid rgba(224,86,215,0.25); } .chip-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; } .chip { padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--bgCard); color: var(--textMuted); cursor: pointer; border: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; transition: all 0.2s ease; } .chip.active { background: linear-gradient(135deg, var(--cyan), var(--cyanLight)); color: #000; border-color: transparent; box-shadow: 0 2px 10px rgba(10,201,219,0.3); } .visualizer { display: flex; gap: 2px; align-items: flex-end; height: 24px; } .viz-bar { flex: 1; border-radius: 1.5px; transform-origin: bottom; animation: barPulse 0.8s ease infinite; } #installBanner { display: none; padding: 12px 16px; margin: 0 0 12px; background: linear-gradient(135deg, rgba(10,201,219,0.1), rgba(123,47,190,0.1)); border: 1px solid var(--borderActive); border-radius: 14px; align-items: center; gap: 10px; } #installBanner.show { display: flex; } #installBanner .msg { flex: 1; font-size: 12px; color: var(--textMuted); } #installBanner .msg strong { color: #fff; } #installBtn { padding: 6px 16px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--cyan), var(--cyanLight)); color: #000; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; } #installDismiss { background: none; border: none; color: var(--textDim); cursor: pointer; font-size: 16px; } .bottom-spacer { height: 20px; flex-shrink: 0; } </style> </head> <body> <div id="splash"> <img src="icons/logo-round.png" style="width:120px;height:120px;border-radius:50%;animation:spin 3s linear infinite;filter:drop-shadow(0 0 40px rgba(10,201,219,0.4)) drop-shadow(0 0 20px rgba(224,86,215,0.3));margin-bottom:20px" alt="DHN"> <h1>DISCO HOUSE <span>NATION</span></h1> <p>Loading the groove...</p> </div> <div class="screen active" id="screen-home"></div> <div class="screen" id="screen-schedule"></div> <div class="screen" id="screen-djs"></div> <div class="screen" id="screen-mixes"></div> <div class="screen" id="screen-chat"></div> <div id="nowPlaying"> <div class="np-art" id="npArt"><img id="npArtImg" src="icons/logo.png" style="width:100%;height:100%;object-fit:cover;border-radius:10px" alt=""></div> <div class="np-info"> <div class="np-label" id="npLabel">● PRESS PLAY</div> <div class="np-title" id="npTitle">Tap play to start listening</div> <div class="np-subtitle" id="npSubtitle"></div> </div> <button class="np-vol" id="volBtn" onclick="toggleMute()">🔊</button> <button class="np-btn" id="playBtn" onclick="togglePlay()">▶</button> </div> <div id="bottomNav"></div> <audio id="audioPlayer" preload="none"></audio> <script>
+const STREAM_URLS = ['https://hello.citrus3.com:2020/8172/stream'];
 const PUBLIC_PLAYER = 'https://hello.citrus3.com:2020/public/discohousenation';
 let currentStreamIndex = 0;
 
-// ── DATA ──
 const allDJs = [
   { name:"Chris Jackson", aka:"Night At The Island", show:"Groove Sanctuary / Laidback Lounge", slot:"Fri 6pm & Sun 6pm", bio:"Co-founder of Disco House Nation. Chris started DJing in 2021 and created Night At The Island shortly after. After playing on several stations over the last 5 years, he decided he wanted to share his love for disco and funk and bring his passion to a wider audience with a dedicated station for like-minded music lovers.", genre:"Disco / Funk", resident:true },
   { name:"Martyn Hixon", aka:"DJ Hicky", show:"Divine Disco", slot:"Tue 7pm & Fri 10pm", bio:"Co-founder of DHN. Martyn's career spans back to 1989, starting at Sloanes Nightclub in Swansea on Technics 1200mk2 turntables — which he still owns and uses today. He quickly established himself across the UK and Europe, and remains one of the driving forces behind Disco House Nation.", genre:"Disco / House", resident:true },
@@ -248,7 +24,6 @@ const allDJs = [
   { name:"Paul Mulholland", aka:"", show:"Guest DJ", slot:"Guest", bio:"Growing up in Glasgow, Scotland — a city that knows how to party — Paul was fortunate to be immersed in the sounds of artists who would go on to shape his musical direction. A true product of Glasgow's legendary club scene, Paul brings that unmistakable Scottish energy and passion for music to every set.", genre:"Disco / House", resident:false },
 ];
 
-// ═══ FALLBACK SCHEDULE (used if website fetch fails) ═══
 const fallbackSchedule = {
   Monday:[{time:"6pm",dj:"Miss G",show:"Let's Go Dancing"},{time:"8pm",dj:"DJ Fernie",show:"Disco Balls"}],
   Tuesday:[{time:"6pm",dj:"ADRA",show:"Guest Mix Replay"},{time:"7pm",dj:"DJ Hicky",show:"Divine Disco"},{time:"8:30pm",dj:"Jamie Ross",show:"Kitchen Beats"}],
@@ -259,11 +34,9 @@ const fallbackSchedule = {
   Sunday:[{time:"12pm",dj:"DJ LoveDisco",show:"Sunday Disco Roast"},{time:"4pm",dj:"DiscoPauli",show:"Disco Back In The House",highlight:true},{time:"6pm",dj:"Chris Jackson",show:"Laidback Lounge"},{time:"8pm",dj:"DJ Bobby K",show:"Twirlessence!"}],
 };
 
-// Live schedule - starts as fallback, gets replaced by live data
 let schedule = {...fallbackSchedule};
 let scheduleSource = 'fallback';
 
-// Fetch live schedule from website via Netlify function
 async function fetchLiveSchedule() {
   try {
     const res = await fetch('/.netlify/functions/schedule');
@@ -272,20 +45,13 @@ async function fetchLiveSchedule() {
     if (data.schedule && Object.keys(data.schedule).length >= 3) {
       schedule = data.schedule;
       scheduleSource = 'live';
-      console.log('Schedule loaded live from website:', data.days, 'days, updated:', data.updated);
-      // Re-render schedule if we're on that screen
-      if (document.getElementById('scheduleScreen')) {
-        renderSchedule();
-      }
+      if (document.getElementById('scheduleScreen')) renderSchedule();
     }
   } catch(e) {
-    console.log('Using fallback schedule:', e.message);
     scheduleSource = 'fallback';
   }
 }
-// Fetch on load
 fetchLiveSchedule();
-// Refresh every 30 minutes
 setInterval(fetchLiveSchedule, 30 * 60 * 1000);
 
 const mixes = [
@@ -298,7 +64,6 @@ const mixes = [
   {dj:"Bobby K",title:"Twirlessence! Live",duration:"1hr 40m",plays:"1.2k",date:"Feb 2"},
 ];
 
-// ── STATE ──
 let currentScreen = 'home';
 let selectedDay = new Date().toLocaleDateString('en-GB',{weekday:'long'});
 if (!schedule[selectedDay]) selectedDay = 'Sunday';
@@ -306,48 +71,105 @@ let expandedDJ = null;
 let djFilter = 'All';
 let isPlaying = false;
 let isMuted = false;
-
+let nowPlayingData = null;
 const audio = document.getElementById('audioPlayer');
 const navItems = [{id:'home',icon:'🏠',label:'Home'},{id:'schedule',icon:'📅',label:'Schedule'},{id:'djs',icon:'🎧',label:'DJs'},{id:'mixes',icon:'🎵',label:'Mixes'},{id:'chat',icon:'💬',label:'Social'}];
 const dayNames = Object.keys(schedule);
 const shortDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-// ── AUDIO CONTROLS ──
-function tryStream(index) {
-  if (index >= STREAM_URLS.length) {
-    // All direct URLs failed — show iframe player as last resort
-    showIframePlayer();
+// ── NOW PLAYING FROM AZURACAST ──
+async function fetchNowPlaying() {
+  try {
+    const resp = await fetch('/.netlify/functions/nowplaying');
+    if (!resp.ok) throw new Error('fetch failed');
+    const data = await resp.json();
+    nowPlayingData = data;
+    updateNowPlaying();
+  } catch(e) {
+    console.log('Now playing fetch failed:', e.message);
+  }
+}
+
+function updateNowPlaying() {
+  const btn = document.getElementById('playBtn');
+  const label = document.getElementById('npLabel');
+  const title = document.getElementById('npTitle');
+  const subtitle = document.getElementById('npSubtitle');
+  const artImg = document.getElementById('npArtImg');
+  const npArt = document.getElementById('npArt');
+
+  npArt.className = isPlaying ? 'np-art playing' : 'np-art';
+  btn.textContent = isPlaying ? '⏸' : '▶';
+
+  if (!isPlaying) {
+    label.innerHTML = '● PRESS PLAY';
+    title.textContent = 'Tap play to start listening';
+    subtitle.textContent = '';
     return;
   }
+
+  label.innerHTML = '<span class="live-dot" style="width:5px;height:5px;border-radius:50%;background:#ff5555;display:inline-block;animation:pulse 1.5s ease infinite;margin-right:4px"></span> LIVE';
+
+  const np = nowPlayingData;
+  if (np && !np.error) {
+    if (np.is_live && np.live_name) {
+      title.textContent = np.live_name + ' — LIVE';
+      subtitle.textContent = (np.artist && np.title) ? np.artist + ' — ' + np.title : 'On Air Now';
+    } else if (np.title) {
+      title.textContent = np.artist || 'Disco House Nation';
+      subtitle.textContent = np.title;
+    } else {
+      title.textContent = 'Disco House Nation';
+      subtitle.textContent = '24/7 Disco & House';
+    }
+    if (np.art && np.art !== artImg.src) {
+      artImg.src = np.art;
+      artImg.onerror = () => { artImg.src = 'icons/logo.png'; };
+    }
+  } else {
+    const now = new Date();
+    const today = now.toLocaleDateString('en-GB',{weekday:'long'});
+    const hour = now.getHours();
+    const todayShows = schedule[today] || [];
+    let currentShow = null;
+    todayShows.forEach(s => {
+      const h = parseInt(s.time);
+      const isPM = s.time.includes('pm');
+      let showHour = isPM && h !== 12 ? h + 12 : h;
+      if (showHour <= hour) currentShow = s;
+    });
+    title.textContent = currentShow ? currentShow.dj + ' — ' + currentShow.show : 'Disco House Nation — 24/7 Mixes';
+    subtitle.textContent = '';
+  }
+
+  const homeDJ = document.getElementById('homeCurrentDJ');
+  const homeShow = document.getElementById('homeCurrentShow');
+  if (homeDJ && homeShow) {
+    homeDJ.textContent = title.textContent;
+    homeShow.textContent = subtitle.textContent || 'Live on Disco House Nation';
+  }
+}
+
+function tryStream(index) {
+  if (index >= STREAM_URLS.length) { showIframePlayer(); return; }
   currentStreamIndex = index;
   audio.src = STREAM_URLS[index];
   audio.play().then(() => {
     isPlaying = true;
     updateNowPlaying();
-    console.log('Stream connected:', STREAM_URLS[index]);
-  }).catch(e => {
-    console.log('Stream failed:', STREAM_URLS[index], e.message);
-    tryStream(index + 1);
-  });
+    fetchNowPlaying();
+  }).catch(e => { tryStream(index + 1); });
 }
 
 function showIframePlayer() {
-  // Fallback: open the AzuraCast public player
   isPlaying = true;
   updateNowPlaying();
-  // Insert iframe player above now-playing bar
   let iframe = document.getElementById('streamIframe');
   if (!iframe) {
     const container = document.createElement('div');
     container.id = 'iframeContainer';
     container.style.cssText = 'position:fixed;bottom:134px;left:12px;right:12px;z-index:45;border-radius:14px;overflow:hidden;border:1px solid var(--borderActive);box-shadow:0 8px 30px rgba(0,0,0,0.5);';
-    container.innerHTML = `
-      <div style="background:var(--bgCard);padding:8px 12px;display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:10px;color:var(--cyan);font-weight:700">STREAM PLAYER</span>
-        <button onclick="closeIframePlayer()" style="background:none;border:none;color:var(--textDim);cursor:pointer;font-size:16px">✕</button>
-      </div>
-      <iframe id="streamIframe" src="${PUBLIC_PLAYER}" style="width:100%;height:180px;border:none;background:#1a1a2e"></iframe>
-    `;
+    container.innerHTML = `<div style="background:var(--bgCard);padding:8px 12px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:10px;color:var(--cyan);font-weight:700">STREAM PLAYER</span><button onclick="closeIframePlayer()" style="background:none;border:none;color:var(--textDim);cursor:pointer;font-size:16px">✕</button></div><iframe id="streamIframe" src="${PUBLIC_PLAYER}" style="width:100%;height:180px;border:none;background:#1a1a2e"></iframe>`;
     document.body.appendChild(container);
   }
 }
@@ -378,36 +200,6 @@ function toggleMute() {
   document.getElementById('volBtn').textContent = isMuted ? '🔇' : '🔊';
 }
 
-function updateNowPlaying() {
-  const art = document.getElementById('npArt');
-  const btn = document.getElementById('playBtn');
-  const label = document.getElementById('npLabel');
-  art.className = isPlaying ? 'np-art playing' : 'np-art';
-  btn.textContent = isPlaying ? '⏸' : '▶';
-  label.innerHTML = isPlaying ? '<span class="live-dot" style="width:5px;height:5px;border-radius:50%;background:#ff5555;display:inline-block;animation:pulse 1.5s ease infinite;margin-right:4px"></span> LIVE' : '● PRESS PLAY';
-
-  // Update "Now Playing" based on current schedule
-  const now = new Date();
-  const today = now.toLocaleDateString('en-GB',{weekday:'long'});
-  const hour = now.getHours();
-  const todayShows = schedule[today] || [];
-  let currentShow = null;
-  todayShows.forEach(s => {
-    const h = parseInt(s.time);
-    const isPM = s.time.includes('pm');
-    let showHour = isPM && h !== 12 ? h + 12 : h;
-    if (showHour <= hour) currentShow = s;
-  });
-  if (currentShow && isPlaying) {
-    document.getElementById('npTitle').textContent = currentShow.dj + ' — ' + currentShow.show;
-  } else if (isPlaying) {
-    document.getElementById('npTitle').textContent = 'Disco House Nation — 24/7 Mixes';
-  } else {
-    document.getElementById('npTitle').textContent = 'Tap play to start listening';
-  }
-}
-
-// ── NAVIGATION ──
 function setScreen(id) {
   currentScreen = id;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -427,7 +219,6 @@ function renderNav() {
   ).join('');
 }
 
-// ── HELPERS ──
 function vizBars(count) {
   const colors = ['var(--cyan)','var(--magenta)','var(--purple)'];
   return Array.from({length:count},(_,i) => {
@@ -438,7 +229,6 @@ function vizBars(count) {
   }).join('');
 }
 
-// ── SCREEN RENDERERS ──
 function renderScreen(id) {
   const el = document.getElementById('screen-' + id);
   switch(id) {
@@ -450,12 +240,28 @@ function renderScreen(id) {
   }
 }
 
+function timeToMins(timeStr) {
+  const m = timeStr.match(/(\d+)(?:[,:.]+(\d+))?\s*(am|pm)/i);
+  if (!m) return 0;
+  let h = parseInt(m[1]);
+  const mins = parseInt(m[2] || 0);
+  const isPM = m[3].toLowerCase() === 'pm';
+  if (isPM && h !== 12) h += 12;
+  if (!isPM && h === 12) h = 0;
+  return h * 60 + mins;
+}
+
 function renderHome() {
-  // Figure out what's on now and next
   const now = new Date();
   const today = now.toLocaleDateString('en-GB',{weekday:'long'});
   const todayShows = schedule[today] || [];
-  let upNext = todayShows.slice(-2);
+  const currentMins = now.getHours() * 60 + now.getMinutes();
+  let upNext = todayShows.filter(s => timeToMins(s.time) > currentMins).slice(0, 3);
+  if (upNext.length === 0) upNext = todayShows.slice(-2);
+  const np = nowPlayingData;
+  const heroTitle = (np && !np.error && np.title) ? (np.is_live && np.live_name ? np.live_name + ' — LIVE' : (np.artist || 'Disco House Nation')) : 'Disco House Nation';
+  const heroSub = (np && !np.error && np.title) ? (np.is_live ? 'On Air Now' : np.title) : 'Tap play to start listening';
+  const listeners = (np && np.listeners > 0) ? `<span style="font-size:10px;color:var(--cyan);font-weight:600">👥 ${np.listeners} listening</span>` : '';
 
   return `
     <div id="installBanner">
@@ -463,19 +269,22 @@ function renderHome() {
       <button id="installBtn" onclick="installApp()">Install</button>
       <button id="installDismiss" onclick="dismissInstall()">✕</button>
     </div>
-
     <div style="text-align:center;margin-bottom:20px">
       <img src="icons/logo.png" style="width:200px;filter:drop-shadow(0 0 30px rgba(10,201,219,0.4)) drop-shadow(0 0 15px rgba(224,86,215,0.3))" alt="Disco House Nation">
     </div>
-
     <div class="card card-glow" style="padding:18px;margin-bottom:16px;position:relative;overflow:hidden">
       <div style="position:absolute;top:-30px;right:-30px;opacity:0.06;transform:rotate(15deg)"><img src="icons/logo.png" style="width:140px" alt=""></div>
-      <div class="live-badge" style="margin-bottom:12px"><span class="live-dot"></span> LIVE 24/7</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="live-badge"><span class="live-dot"></span> LIVE 24/7</div>
+        ${listeners}
+      </div>
       <div style="display:flex;align-items:center;gap:14px">
-        <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,var(--purple),var(--magenta));display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 4px 20px rgba(224,86,215,0.3)">🎧</div>
+        <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,var(--purple),var(--magenta));display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 4px 20px rgba(224,86,215,0.3);overflow:hidden">
+          ${(np && np.art) ? `<img src="${np.art}" style="width:100%;height:100%;object-fit:cover;border-radius:16px" onerror="this.style.display='none'" alt="">` : '🎧'}
+        </div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:16px;font-weight:800" id="homeCurrentDJ">Disco House Nation</div>
-          <div style="font-size:12px;color:var(--cyanLight);font-weight:500" id="homeCurrentShow">Tap play to start listening</div>
+          <div style="font-size:16px;font-weight:800;overflow:hidden;white-space:nowrap;text-overflow:ellipsis" id="homeCurrentDJ">${heroTitle}</div>
+          <div style="font-size:12px;color:var(--cyanLight);font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis" id="homeCurrentShow">${heroSub}</div>
           <div style="font-size:10px;color:var(--textDim);margin-top:2px">${today} — Live DJs from 6pm UK</div>
         </div>
       </div>
@@ -484,7 +293,6 @@ function renderHome() {
         ${isPlaying ? '⏸ PAUSE STREAM' : '▶ LISTEN LIVE'}
       </button>
     </div>
-
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
       ${[
         {icon:'📅',label:'Schedule',sub:"This week's shows",screen:'schedule'},
@@ -499,7 +307,6 @@ function renderHome() {
         </div>
       `).join('')}
     </div>
-
     <div class="section-line"><span class="section-title" style="margin:0">UP NEXT TODAY</span><div class="line"></div></div>
     ${upNext.map(s => `
       <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
@@ -508,7 +315,6 @@ function renderHome() {
         ${s.highlight?'<div class="you-badge">YOU</div>':''}
       </div>
     `).join('')}
-
     <div style="text-align:center;margin-top:20px;padding:16px">
       <div style="display:flex;justify-content:center;gap:16px">
         <a href="https://www.facebook.com/groups/1132113378405209" target="_blank" style="font-size:22px">📘</a>
@@ -590,25 +396,16 @@ function renderMixes() {
   return `
     <h2 style="font-size:20px;font-weight:900;margin-bottom:2px"><span style="color:var(--cyan)">MIXES</span></h2>
     <p style="font-size:11px;color:var(--textMuted);margin-bottom:14px">Catch up on past shows & guest sets</p>
-
-    <!-- SoundCloud Embed Player -->
     <div class="card" style="overflow:hidden;margin-bottom:14px;border-radius:16px">
       <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:8px">
           <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#FF5500,#FF8800);display:flex;align-items:center;justify-content:center;font-size:14px">🔊</div>
-          <div>
-            <div style="font-size:12px;font-weight:700">Latest Mixes</div>
-            <div style="font-size:9px;color:var(--textMuted)">SoundCloud</div>
-          </div>
+          <div><div style="font-size:12px;font-weight:700">Latest Mixes</div><div style="font-size:9px;color:var(--textMuted)">SoundCloud</div></div>
         </div>
         <a href="https://soundcloud.com/disco-house-nation" target="_blank" rel="noopener" style="font-size:10px;font-weight:600;color:var(--cyan);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:8px">Open ↗</a>
       </div>
-      <iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/disco-house-nation&color=%230AC9DB&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"
-        style="border:none;background:#1a1a2e"></iframe>
+      <iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/disco-house-nation&color=%230AC9DB&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false" style="border:none;background:#1a1a2e"></iframe>
     </div>
-
-    <!-- Recent Mixes List -->
     <div class="section-line"><span class="section-title" style="margin:0">RECENT SHOWS</span><div class="line"></div></div>
     <div class="chip-scroll">
       ${['All','DiscoPauli','Chris Jackson','DJ Hicky','Slazz','More...'].map((f,i)=>`<span class="chip ${i===0?'active':''}">${f}</span>`).join('')}
@@ -629,17 +426,13 @@ function renderMixes() {
         </div>
       `).join('')}
     </div>
-
-    <!-- SoundCloud + Mixcloud Links -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
-      <a href="https://soundcloud.com/disco-house-nation" target="_blank" rel="noopener"
-        style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;border-radius:14px;background:linear-gradient(135deg,rgba(255,85,0,0.1),rgba(255,136,0,0.05));border:1px solid rgba(255,85,0,0.2);text-decoration:none;transition:transform 0.15s" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform='scale(1)'">
+      <a href="https://soundcloud.com/disco-house-nation" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;border-radius:14px;background:linear-gradient(135deg,rgba(255,85,0,0.1),rgba(255,136,0,0.05));border:1px solid rgba(255,85,0,0.2);text-decoration:none">
         <div style="font-size:24px">🔊</div>
         <div style="font-size:12px;font-weight:700;color:#FF7700">SoundCloud</div>
         <div style="font-size:9px;color:var(--textMuted)">All mixes + downloads</div>
       </a>
-      <a href="https://www.mixcloud.com/DiscoHouseNation/" target="_blank" rel="noopener"
-        style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;border-radius:14px;background:linear-gradient(135deg,rgba(80,0,255,0.1),rgba(139,92,246,0.05));border:1px solid rgba(80,0,255,0.2);text-decoration:none;transition:transform 0.15s" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform='scale(1)'">
+      <a href="https://www.mixcloud.com/DiscoHouseNation/" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;border-radius:14px;background:linear-gradient(135deg,rgba(80,0,255,0.1),rgba(139,92,246,0.05));border:1px solid rgba(80,0,255,0.2);text-decoration:none">
         <div style="font-size:24px">🎧</div>
         <div style="font-size:12px;font-weight:700;color:#8B5CF6">Mixcloud</div>
         <div style="font-size:9px;color:var(--textMuted)">Full show recordings</div>
@@ -653,38 +446,23 @@ function renderChat() {
   return `
     <h2 style="font-size:20px;font-weight:900;margin-bottom:2px"><span style="color:var(--cyan)">COMMUNITY</span></h2>
     <p style="font-size:11px;color:var(--textMuted);margin-bottom:16px">Connect with DJs and fellow disco lovers</p>
-
-    <!-- Facebook Group — Main CTA -->
     <div class="card card-glow" style="padding:20px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden">
       <div style="position:absolute;top:-20px;right:-20px;font-size:80px;opacity:0.04;transform:rotate(15deg)">💬</div>
       <div style="font-size:40px;margin-bottom:10px">💬</div>
       <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">DHN Facebook Group</h3>
       <p style="font-size:11px;color:var(--textMuted);margin-bottom:14px;line-height:1.5">The home of our community — chat with DJs, share tracks, request songs during live shows, and connect with disco lovers worldwide.</p>
-      <a href="https://www.facebook.com/groups/1132113378405209" target="_blank" rel="noopener"
-        style="display:block;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1877F2,#42A5F5);color:#fff;font-size:14px;font-weight:800;text-decoration:none;letter-spacing:0.5px;box-shadow:0 4px 20px rgba(24,119,242,0.3)">
-        📘 JOIN THE GROUP
-      </a>
+      <a href="https://www.facebook.com/groups/1132113378405209" target="_blank" rel="noopener" style="display:block;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1877F2,#42A5F5);color:#fff;font-size:14px;font-weight:800;text-decoration:none;letter-spacing:0.5px;box-shadow:0 4px 20px rgba(24,119,242,0.3)">📘 JOIN THE GROUP</a>
       <p style="font-size:10px;color:var(--textDim);margin-top:10px">Opens in Facebook app or browser</p>
     </div>
-
-    <!-- Facebook Group Embed -->
     <div class="card" style="overflow:hidden;margin-bottom:14px;border-radius:16px">
       <div style="padding:12px 14px;border-bottom:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:8px">
           <span style="font-size:16px">📘</span>
-          <div>
-            <div style="font-size:12px;font-weight:700">Disco House Nation Group</div>
-            <div style="font-size:10px;color:var(--textMuted)">Latest posts from the community</div>
-          </div>
+          <div><div style="font-size:12px;font-weight:700">Disco House Nation Group</div><div style="font-size:10px;color:var(--textMuted)">Latest posts from the community</div></div>
         </div>
       </div>
-      <iframe src="https://www.facebook.com/plugins/group.php?href=https%3A%2F%2Fwww.facebook.com%2Fgroups%2F1132113378405209&width=340&show_social_context=true&show_metadata=true" 
-        width="100%" height="400" style="border:none;overflow:hidden;background:#1a1a2e" 
-        scrolling="no" frameborder="0" allowfullscreen="true" 
-        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+      <iframe src="https://www.facebook.com/plugins/group.php?href=https%3A%2F%2Fwww.facebook.com%2Fgroups%2F1132113378405209&width=340&show_social_context=true&show_metadata=true" width="100%" height="400" style="border:none;overflow:hidden;background:#1a1a2e" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
     </div>
-
-    <!-- Social Links Grid -->
     <div style="margin-bottom:14px">
       <div class="section-line"><span class="section-title" style="margin:0">FOLLOW US</span><div class="line"></div></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -694,7 +472,7 @@ function renderChat() {
           {icon:'🔊', name:'SoundCloud', sub:'DHN Mixes', url:'https://soundcloud.com/disco-house-nation', color:'linear-gradient(135deg,#FF5500,#FF8800)'},
           {icon:'🎧', name:'Mixcloud', sub:'DHN Shows', url:'https://www.mixcloud.com/DiscoHouseNation/', color:'linear-gradient(135deg,#5000FF,#8B5CF6)'},
         ].map(s => `
-          <a href="${s.url}" target="_blank" rel="noopener" class="card" style="padding:14px;text-decoration:none;display:block;transition:transform 0.15s" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform='scale(1)'">
+          <a href="${s.url}" target="_blank" rel="noopener" class="card" style="padding:14px;text-decoration:none;display:block">
             <div style="width:36px;height:36px;border-radius:10px;background:${s.color};display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px">${s.icon}</div>
             <div style="font-size:12px;font-weight:700;color:#fff">${s.name}</div>
             <div style="font-size:9px;color:var(--textMuted);margin-top:1px">${s.sub}</div>
@@ -702,22 +480,15 @@ function renderChat() {
         `).join('')}
       </div>
     </div>
-
-    <!-- Website Link -->
     <a href="https://www.discohousenation.com" target="_blank" rel="noopener" class="card" style="display:flex;align-items:center;gap:12px;padding:14px;text-decoration:none;margin-bottom:14px">
       <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--cyanLight));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🌐</div>
-      <div style="flex:1">
-        <div style="font-size:12px;font-weight:700;color:#fff">discohousenation.com</div>
-        <div style="font-size:10px;color:var(--textMuted)">Visit the main website</div>
-      </div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:700;color:#fff">discohousenation.com</div><div style="font-size:10px;color:var(--textMuted)">Visit the main website</div></div>
       <span style="font-size:14px;color:var(--textDim)">→</span>
     </a>
-
     <div class="bottom-spacer"></div>
   `;
 }
 
-// ── PWA INSTALL ──
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
@@ -725,14 +496,10 @@ window.addEventListener('beforeinstallprompt', e => {
   const banner = document.getElementById('installBanner');
   if (banner) banner.classList.add('show');
 });
-
 function installApp() {
   if (deferredPrompt) {
     deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(r => {
-      deferredPrompt = null;
-      dismissInstall();
-    });
+    deferredPrompt.userChoice.then(r => { deferredPrompt = null; dismissInstall(); });
   }
 }
 function dismissInstall() {
@@ -740,36 +507,29 @@ function dismissInstall() {
   if (b) b.classList.remove('show');
 }
 
-// ── SERVICE WORKER (only works when hosted on a real server) ──
 if ('serviceWorker' in navigator && location.hostname !== 'localhost' && !location.hostname.includes('claudeusercontent')) {
   navigator.serviceWorker.register('sw.js').then(reg => {
-    // Check for updates every time the app loads
     reg.update();
-    // Also check every 5 minutes while app is open
     setInterval(() => reg.update(), 5 * 60 * 1000);
   }).catch(() => {});
 }
 
-// ── INIT ──
 window.addEventListener('load', () => {
   setTimeout(() => {
     document.getElementById('splash').classList.add('hidden');
     setTimeout(() => document.getElementById('splash').remove(), 500);
   }, 1500);
-
   renderNav();
   renderScreen('home');
   updateNowPlaying();
+  fetchNowPlaying();
 });
 
-// Update now playing info periodically
-setInterval(updateNowPlaying, 30000);
+// Refresh now playing every 15 seconds
+setInterval(fetchNowPlaying, 15000);
 
-// Handle audio errors — try next stream URL
 audio.addEventListener('error', () => {
-  if (isPlaying) {
-    tryStream(currentStreamIndex + 1);
-  }
+  if (isPlaying) tryStream(currentStreamIndex + 1);
 });
 </script>
 </body>
