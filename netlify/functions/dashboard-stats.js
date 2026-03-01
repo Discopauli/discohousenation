@@ -1,6 +1,5 @@
-// DHN Now Playing - Fetches current track from CentovaCast
-// Endpoint: /.netlify/functions/nowplaying
-// FIXED: Uses CentovaCast playerInfo (not AzuraCast which returns 502)
+// DHN Dashboard Stats - Fetches live listener data from CentovaCast
+// Endpoint: /.netlify/functions/dashboard-stats
 
 const https = require('https');
 
@@ -11,7 +10,7 @@ function fetchPlayerInfo() {
       port: 2020,
       path: '/AudioPlayer/discohousenation/playerInfo',
       method: 'GET',
-      headers: { 'User-Agent': 'DHN-App/1.0' },
+      headers: { 'User-Agent': 'DHN-Dashboard/1.0' },
       rejectUnauthorized: false,
       timeout: 8000
     };
@@ -23,7 +22,7 @@ function fetchPlayerInfo() {
         try {
           resolve(JSON.parse(data));
         } catch (e) {
-          reject(new Error('Invalid JSON'));
+          reject(new Error('Invalid JSON from CentovaCast'));
         }
       });
     });
@@ -49,34 +48,38 @@ exports.handler = async (event) => {
   try {
     const info = await fetchPlayerInfo();
 
+    // Parse the now playing string - CentovaCast format: "ARTIST - TITLE" or just title
     let artist = '';
-    let title = info.nowplaying || '';
+    let title = info.nowplaying || 'Unknown';
     if (info.nowplaying && info.nowplaying.includes(' - ')) {
       const parts = info.nowplaying.split(' - ');
       artist = parts[0].trim();
       title = parts.slice(1).join(' - ').trim();
     }
 
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
+    const response = {
+      listeners: info.connections || 0,
+      now_playing: {
+        raw: info.nowplaying || '',
         artist: artist,
-        title: title || info.nowplaying || 'DHN Radio',
-        is_live: true,
-        listeners: info.connections || 0
-      })
+        title: title
+      },
+      stream_status: 'online',
+      timestamp: new Date().toISOString(),
+      source: 'centovacast'
     };
+
+    return { statusCode: 200, headers, body: JSON.stringify(response) };
   } catch (error) {
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        error: 'CentovaCast unavailable: ' + error.message,
-        artist: '',
-        title: '',
-        is_live: false,
-        listeners: 0
+        listeners: 0,
+        now_playing: { raw: '', artist: '', title: 'Stream data unavailable' },
+        stream_status: 'error',
+        error: error.message,
+        timestamp: new Date().toISOString()
       })
     };
   }

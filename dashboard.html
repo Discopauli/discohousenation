@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0517">
+<title>DHN Live Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0517;
+  --card: #151029;
+  --card2: #1a1335;
+  --border: rgba(10,201,219,0.12);
+  --cyan: #0AC9DB;
+  --cyanGlow: rgba(10,201,219,0.15);
+  --magenta: #E056D7;
+  --purple: #7B2FBE;
+  --amber: #F59E0B;
+  --green: #10B981;
+  --red: #EF4444;
+  --text: #ffffff;
+  --muted: #8B8BA3;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(123,47,190,0.12) 0%, transparent 60%);
+}
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--cyan); text-decoration: none;
+  font-size: 12px; font-weight: 600;
+  padding: 16px 20px; opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.back-link:hover { opacity: 1; }
+
+.container {
+  max-width: 680px; margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+/* Header */
+.dash-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 28px;
+}
+.dash-header img {
+  width: 48px; height: 48px; border-radius: 12px;
+}
+.dash-header h1 {
+  font-size: 20px; font-weight: 900;
+  letter-spacing: -0.3px;
+}
+.dash-header h1 span { color: var(--cyan); }
+.dash-header p {
+  font-size: 11px; color: var(--muted); font-weight: 500;
+  margin-top: 2px;
+}
+
+/* Status bar */
+.status-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; border-radius: 12px;
+  background: var(--card); border: 1px solid var(--border);
+  margin-bottom: 20px; font-size: 12px;
+}
+.status-indicator {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700;
+}
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  animation: pulse 1.5s ease infinite;
+}
+.status-dot.online { background: var(--green); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+.status-dot.offline { background: var(--red); animation: none; }
+.status-dot.error { background: var(--amber); }
+.refresh-info { color: var(--muted); font-size: 11px; }
+
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* Big listener count */
+.listener-hero {
+  text-align: center; padding: 36px 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.listener-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 30%, var(--cyanGlow) 0%, transparent 70%);
+  pointer-events: none;
+}
+.listener-count {
+  font-size: 96px; font-weight: 900;
+  line-height: 1; letter-spacing: -4px;
+  color: var(--cyan);
+  text-shadow: 0 0 40px rgba(10,201,219,0.3);
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.listener-count.bump {
+  transform: scale(1.08);
+}
+.listener-label {
+  font-size: 13px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase;
+  letter-spacing: 2px; margin-top: 8px;
+  position: relative;
+}
+
+/* Now playing */
+.now-playing {
+  padding: 18px 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.np-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--purple), var(--magenta));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.np-equalizer {
+  display: flex; align-items: flex-end; gap: 2px; height: 18px;
+}
+.np-equalizer .bar {
+  width: 3px; background: white; border-radius: 1px;
+  animation: eq 0.8s ease infinite;
+}
+.np-equalizer .bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+.np-equalizer .bar:nth-child(2) { height: 14px; animation-delay: 0.15s; }
+.np-equalizer .bar:nth-child(3) { height: 6px; animation-delay: 0.3s; }
+.np-equalizer .bar:nth-child(4) { height: 12px; animation-delay: 0.45s; }
+
+@keyframes eq {
+  0%,100% { height: 4px; }
+  50% { height: 18px; }
+}
+
+.np-info { flex: 1; min-width: 0; }
+.np-label { font-size: 10px; color: var(--magenta); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.np-track { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.np-artist { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+/* Stats grid */
+.stats-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  margin-bottom: 16px;
+}
+.stat-card {
+  padding: 18px; border-radius: 14px;
+  background: var(--card); border: 1px solid var(--border);
+  text-align: center;
+}
+.stat-num {
+  font-size: 32px; font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.stat-label {
+  font-size: 10px; color: var(--muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;
+}
+.stat-card.peak .stat-num { color: var(--amber); }
+.stat-card.status .stat-num { color: var(--green); font-size: 16px; font-weight: 700; }
+
+/* History log */
+.history-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 20px;
+}
+.history-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.history-header h3 { font-size: 14px; font-weight: 800; }
+.history-header span { font-size: 11px; color: var(--muted); }
+.history-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 12px;
+}
+.history-item:last-child { border-bottom: none; }
+.history-time { color: var(--muted); font-weight: 500; width: 60px; flex-shrink: 0; }
+.history-track { flex: 1; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0 12px; }
+.history-listeners {
+  color: var(--cyan); font-weight: 700;
+  background: rgba(10,201,219,0.08);
+  padding: 2px 8px; border-radius: 6px;
+  font-size: 11px; flex-shrink: 0;
+}
+.empty-history { text-align: center; color: var(--muted); padding: 20px; font-size: 12px; }
+
+/* Footer */
+.dash-footer {
+  text-align: center; margin-top: 24px;
+  font-size: 11px; color: var(--muted);
+}
+
+/* Loading */
+.loading { opacity: 0.5; }
+.error-msg {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: var(--red); padding: 14px;
+  border-radius: 12px; text-align: center;
+  font-size: 13px; margin-bottom: 16px;
+  display: none;
+}
+.error-msg.show { display: block; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .listener-count { font-size: 72px; letter-spacing: -3px; }
+  .container { padding: 0 14px 30px; }
+}
+</style>
+</head>
+<body>
+
+<a href="/" class="back-link">← Back to App</a>
+
+<div class="container">
+  <div class="dash-header">
+    <img src="icons/icon-192.png" alt="DHN" onerror="this.style.display='none'">
+    <div>
+      <h1>LIVE <span>DASHBOARD</span></h1>
+      <p>Real-time stream activity</p>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-indicator">
+      <div class="status-dot online" id="statusDot"></div>
+      <span id="statusText">Connecting...</span>
+    </div>
+    <div class="refresh-info" id="refreshInfo">Updates every 10s</div>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="listener-hero">
+    <div class="listener-count" id="listenerCount">-</div>
+    <div class="listener-label">Live Listeners</div>
+  </div>
+
+  <div class="now-playing" id="nowPlaying">
+    <div class="np-icon">
+      <div class="np-equalizer">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      </div>
+    </div>
+    <div class="np-info">
+      <div class="np-label">Now Playing</div>
+      <div class="np-track" id="npTrack">Loading...</div>
+      <div class="np-artist" id="npArtist"></div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card peak">
+      <div class="stat-num" id="peakCount">-</div>
+      <div class="stat-label">Peak Today</div>
+    </div>
+    <div class="stat-card status">
+      <div class="stat-num" id="streamStatus">Checking...</div>
+      <div class="stat-label">Stream Status</div>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <div class="history-header">
+      <h3>📊 Listener Log</h3>
+      <span id="historyCount">0 entries</span>
+    </div>
+    <div id="historyList">
+      <div class="empty-history">Collecting data... checks every 10 seconds</div>
+    </div>
+  </div>
+
+  <div class="dash-footer">
+    Disco House Nation &copy; 2026 &middot; Data from CentovaCast
+  </div>
+</div>
+
+<script>
+const API_URL = '/.netlify/functions/dashboard-stats';
+let peakListeners = 0;
+let history = [];
+let lastCount = null;
+
+async function fetchStats() {
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error('API returned ' + res.status);
+    const data = await res.json();
+
+    // Update listener count with animation
+    const countEl = document.getElementById('listenerCount');
+    const newCount = data.listeners || 0;
+    
+    if (lastCount !== null && newCount !== lastCount) {
+      countEl.classList.add('bump');
+      setTimeout(() => countEl.classList.remove('bump'), 300);
+    }
+    countEl.textContent = newCount;
+    lastCount = newCount;
+
+    // Update peak
+    if (newCount > peakListeners) {
+      peakListeners = newCount;
+      document.getElementById('peakCount').textContent = peakListeners;
+    }
+
+    // Update now playing
+    const np = data.now_playing || {};
+    if (np.raw) {
+      document.getElementById('npTrack').textContent = np.title || np.raw;
+      document.getElementById('npArtist').textContent = np.artist || '';
+    } else {
+      document.getElementById('npTrack').textContent = 'Stream active';
+      document.getElementById('npArtist').textContent = '';
+    }
+
+    // Update status
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const streamStatus = document.getElementById('streamStatus');
+    
+    if (data.stream_status === 'online') {
+      statusDot.className = 'status-dot online';
+      statusText.textContent = 'Live';
+      streamStatus.textContent = '● Online';
+      streamStatus.style.color = 'var(--green)';
+    } else {
+      statusDot.className = 'status-dot error';
+      statusText.textContent = 'Issue detected';
+      streamStatus.textContent = '● Error';
+      streamStatus.style.color = 'var(--amber)';
+    }
+
+    // Add to history log
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    
+    history.unshift({
+      time: timeStr,
+      track: np.raw || 'Unknown',
+      listeners: newCount
+    });
+    
+    // Keep last 30 entries
+    if (history.length > 30) history.pop();
+    
+    renderHistory();
+
+    // Clear error
+    document.getElementById('errorMsg').classList.remove('show');
+    document.getElementById('refreshInfo').textContent = 'Last updated: ' + timeStr;
+
+  } catch (err) {
+    const errEl = document.getElementById('errorMsg');
+    errEl.textContent = '⚠ ' + err.message;
+    errEl.classList.add('show');
+    
+    document.getElementById('statusDot').className = 'status-dot error';
+    document.getElementById('statusText').textContent = 'Connection issue';
+  }
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  document.getElementById('historyCount').textContent = history.length + ' entries';
+  
+  if (history.length === 0) {
+    list.innerHTML = '<div class="empty-history">Collecting data...</div>';
+    return;
+  }
+
+  list.innerHTML = history.map(h => `
+    <div class="history-item">
+      <span class="history-time">${h.time}</span>
+      <span class="history-track" title="${h.track}">${h.track}</span>
+      <span class="history-listeners">${h.listeners} 🎧</span>
+    </div>
+  `).join('');
+}
+
+// Initial fetch
+fetchStats();
+
+// Auto-refresh every 10 seconds
+setInterval(fetchStats, 10000);
+</script>
+
+</body>
+</html>
