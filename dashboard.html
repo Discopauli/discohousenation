@@ -180,35 +180,7 @@ body {
 .stat-card.peak .stat-num { color: var(--amber); }
 .stat-card.status .stat-num { color: var(--green); font-size: 16px; font-weight: 700; }
 
-/* History log */
-.history-section {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 18px 20px;
-}
-.history-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 14px;
-}
-.history-header h3 { font-size: 14px; font-weight: 800; }
-.history-header span { font-size: 11px; color: var(--muted); }
-.history-item {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  font-size: 12px;
-}
-.history-item:last-child { border-bottom: none; }
-.history-time { color: var(--muted); font-weight: 500; width: 60px; flex-shrink: 0; }
-.history-track { flex: 1; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0 12px; }
-.history-listeners {
-  color: var(--cyan); font-weight: 700;
-  background: rgba(10,201,219,0.08);
-  padding: 2px 8px; border-radius: 6px;
-  font-size: 11px; flex-shrink: 0;
-}
-.empty-history { text-align: center; color: var(--muted); padding: 20px; font-size: 12px; }
+
 
 /* Footer */
 .dash-footer {
@@ -287,15 +259,7 @@ body {
     </div>
   </div>
 
-  <div class="history-section">
-    <div class="history-header">
-      <h3>📊 Listener Log</h3>
-      <span id="historyCount">0 entries</span>
-    </div>
-    <div id="historyList">
-      <div class="empty-history">Collecting data... checks every 10 seconds</div>
-    </div>
-  </div>
+
 
   <div class="dash-footer">
     Disco House Nation &copy; 2026 &middot; Data from CentovaCast
@@ -305,7 +269,6 @@ body {
 <script>
 const API_URL = '/.netlify/functions/dashboard-stats';
 let peakListeners = 0;
-let history = [];
 let lastCount = null;
 
 async function fetchStats() {
@@ -358,24 +321,9 @@ async function fetchStats() {
       streamStatus.style.color = 'var(--amber)';
     }
 
-    // Add to history log
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    
-    history.unshift({
-      time: timeStr,
-      track: np.raw || 'Unknown',
-      listeners: newCount
-    });
-    
-    // Keep last 30 entries
-    if (history.length > 30) history.pop();
-    
-    renderHistory();
-
     // Clear error
     document.getElementById('errorMsg').classList.remove('show');
-    document.getElementById('refreshInfo').textContent = 'Last updated: ' + timeStr;
+    document.getElementById('refreshInfo').textContent = 'Last updated: ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
   } catch (err) {
     const errEl = document.getElementById('errorMsg');
@@ -385,24 +333,6 @@ async function fetchStats() {
     document.getElementById('statusDot').className = 'status-dot error';
     document.getElementById('statusText').textContent = 'Connection issue';
   }
-}
-
-function renderHistory() {
-  const list = document.getElementById('historyList');
-  document.getElementById('historyCount').textContent = history.length + ' entries';
-  
-  if (history.length === 0) {
-    list.innerHTML = '<div class="empty-history">Collecting data...</div>';
-    return;
-  }
-
-  list.innerHTML = history.map(h => `
-    <div class="history-item">
-      <span class="history-time">${h.time}</span>
-      <span class="history-track" title="${h.track}">${h.track}</span>
-      <span class="history-listeners">${h.listeners} 🎧</span>
-    </div>
-  `).join('');
 }
 
 // Initial fetch
